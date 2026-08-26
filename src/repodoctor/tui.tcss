@@ -1,0 +1,296 @@
+Screen {
+    background: #050816;
+    color: #E6EDF3;
+
+    padding: 0 1;
+
+    overflow: hidden hidden;
+
+    scrollbar-background: #050816;
+    scrollbar-background-hover: #050816;
+    scrollbar-background-active: #050816;
+
+    scrollbar-color: #174A75;
+    scrollbar-color-hover: #00E5FF;
+    scrollbar-color-active: #9B7BFF;
+
+    scrollbar-corner-color: #050816;
+}
+
+#hero {
+    height: 4;
+
+    background: #080D1D;
+
+    border: round #00E5FF;
+
+    padding: 0 1;
+}
+
+#metadata {
+    height: 2;
+
+    padding: 0 1;
+
+    border-bottom: solid #25304A;
+
+    content-align: left middle;
+}
+
+#shortcut-bar {
+    height: 2;
+
+    background: #070B18;
+
+    border-bottom: solid #25304A;
+
+    padding: 0 1;
+
+    content-align: left middle;
+}
+
+#overview-grid {
+    layout: grid;
+
+    grid-size: 2 1;
+    grid-columns: 1fr 1fr;
+    grid-rows: 6;
+
+    grid-gutter: 0 2;
+
+    height: 6;
+
+    margin-top: 1;
+}
+
+.card {
+    background: #080D1D;
+
+    border: round #25304A;
+
+    padding: 0 2;
+}
+
+#overall-card {
+    border: round #00E676;
+}
+
+#summary-card {
+    border: round #9B7BFF;
+}
+
+#category-card {
+    height: 8;
+
+    margin-top: 1;
+
+    border: round #00E5FF;
+
+    padding: 0 2;
+}
+
+#feed-card {
+    height: 1fr;
+    min-height: 7;
+
+    margin-top: 1;
+
+    background: #080D1D;
+
+    border: round #25304A;
+
+    padding: 0 1;
+
+    overflow: hidden hidden;
+}
+
+#feed-title {
+    height: 1;
+
+    padding: 0 1;
+}
+
+#feed {
+    height: 1fr;
+
+    background: #080D1D;
+
+    scrollbar-size-horizontal: 0;
+    scrollbar-size-vertical: 1;
+
+    scrollbar-gutter: stable;
+
+    scrollbar-background: #050816;
+    scrollbar-background-hover: #050816;
+    scrollbar-background-active: #050816;
+
+    scrollbar-color: #174A75;
+    scrollbar-color-hover: #00E5FF;
+    scrollbar-color-active: #9B7BFF;
+
+    scrollbar-corner-color: #050816;
+}
+
+#feed > .datatable--header {
+    background: #0C1428;
+
+    color: #9B7BFF;
+
+    text-style: bold;
+}
+
+#feed > .datatable--cursor {
+    background: #10213A;
+
+    color: #E6EDF3;
+}
+
+#feed > .datatable--hover {
+    background: #0C172A;
+}
+
+#actions-card {
+    height: 5;
+
+    margin-top: 1;
+
+    background: #080D1D;
+
+    border: round #FF4FD8;
+
+    padding: 0 2;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    scrollbar-visibility: hidden;
+}
+
+RuleExplainScreen {
+    align: center middle;
+
+    background: rgba(5, 8, 22, 0.82);
+}
+
+#rule-dialog {
+    width: 76%;
+    max-width: 110;
+
+    height: 24;
+    max-height: 82%;
+
+    background: #080D1D;
+
+    border: round #00E5FF;
+
+    padding: 1 3;
+
+    overflow-x: hidden;
+
+    scrollbar-size-horizontal: 0;
+    scrollbar-size-vertical: 1;
+
+    scrollbar-background: #050816;
+
+    scrollbar-color: #174A75;
+    scrollbar-color-hover: #00E5FF;
+    scrollbar-color-active: #9B7BFF;
+}
+
+#rule-modal-content {
+    width: 100%;
+
+    color: #E6EDF3;
+}
+
+FixPlanScreen {
+    align: center middle;
+
+    background: rgba(5, 8, 22, 0.84);
+}
+
+#fix-dialog {
+    width: 82%;
+    max-width: 120;
+
+    height: 82%;
+    max-height: 34;
+
+    background: #080D1D;
+
+    border: round #FF4FD8;
+
+    padding: 1 3;
+
+    overflow-x: hidden;
+
+    scrollbar-size-horizontal: 0;
+    scrollbar-size-vertical: 1;
+
+    scrollbar-background: #050816;
+
+    scrollbar-color: #4A174A;
+    scrollbar-color-hover: #FF4FD8;
+    scrollbar-color-active: #9B7BFF;
+}
+
+#fix-modal-content {
+    width: 100%;
+    height: auto;
+}
+
+#fix-button-row {
+    layout: grid;
+
+    grid-size: 2 1;
+    grid-columns: 1fr 1fr;
+
+    grid-gutter: 0 2;
+
+    height: 3;
+
+    margin-top: 1;
+}
+
+#fix-button-row Button {
+    width: 100%;
+}
+
+ConfirmApplyScreen {
+    align: center middle;
+
+    background: rgba(5, 8, 22, 0.90);
+}
+
+#confirm-dialog {
+    layout: grid;
+
+    grid-size: 2 2;
+    grid-columns: 1fr 1fr;
+    grid-rows: 1fr 3;
+
+    grid-gutter: 1 2;
+
+    width: 66%;
+    max-width: 88;
+
+    height: 15;
+
+    background: #080D1D;
+
+    border: round #FFD166;
+
+    padding: 1 3;
+
+    overflow: hidden hidden;
+}
+
+#confirm-content {
+    column-span: 2;
+
+    width: 100%;
+}
+
+#confirm-dialog Button {
+    width: 100%;
+}

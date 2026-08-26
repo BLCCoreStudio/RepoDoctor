@@ -1,0 +1,9 @@
+.github/workflows/public-validation.yml
+.gitignore
+CHANGELOG.md
+LICENSE
+PUBLIC_MANIFEST.txt
+README.md
+SECURITY.md
+src/repodoctor/__init__.py
+src/repodoctor/tui.tcss

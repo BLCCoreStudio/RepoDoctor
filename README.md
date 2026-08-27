@@ -1,40 +1,47 @@
+<div align="center">
+
 # RepoDoctor
 
-**Professional repository intelligence by BLCCoreStudio.**
+### Professional repository intelligence by BLCCoreStudio
 
-RepoDoctor analyzes software repositories and turns repository health into actionable diagnostics across security, testing, documentation, CI/CD, dependencies, configuration, repository structure, and architecture.
+[![Version](https://img.shields.io/badge/version-0.1.0-5B5BD6?style=for-the-badge)](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.0)
+![Status](https://img.shields.io/badge/status-alpha-0891B2?style=for-the-badge)
+![Platform](https://img.shields.io/badge/platform-Linux%20x86__64-111827?style=for-the-badge&logo=linux&logoColor=white)
+![Build Target](https://img.shields.io/badge/glibc-2.31%2B-2563EB?style=for-the-badge)
+[![License](https://img.shields.io/badge/license-proprietary-7C3AED?style=for-the-badge)](LICENSE)
+
+**Analyze repository health. Understand what is wrong. Fix what matters first.**
+
+[Release v0.1.0](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.0) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
+
+</div>
+
+---
+
+RepoDoctor analyzes software repositories and turns repository health into actionable diagnostics across **security, testing, documentation, CI/CD, dependencies, configuration, repository structure, and architecture**.
 
 It is designed around three questions:
 
-> How healthy is this repository?
-
-> What is wrong with it?
-
-> What should be fixed first?
-
----
+> **How healthy is this repository?**  
+> **What is wrong with it?**  
+> **What should be fixed first?**
 
 ## Public Preview
 
-**Current version:** `0.1.0`
+**Current version:** `0.1.0`  
 **Status:** Alpha
 
-This repository is the official public preview and product showcase for RepoDoctor.
+> [!IMPORTANT]
+> This repository is the official public preview and product showcase for RepoDoctor. The complete RepoDoctor analysis engine is proprietary and is developed in a separate private repository.
 
-The complete RepoDoctor analysis engine is proprietary and is developed in a separate private repository.
-
-This public repository intentionally contains selected documentation, release information, security policy, and limited non-core showcase material only.
-
-It is **not** the complete RepoDoctor source distribution.
-
----
+This public repository intentionally contains selected documentation, release information, security policy, and limited non-core showcase material only. It is **not** the complete RepoDoctor source distribution.
 
 ## What RepoDoctor Does
 
 RepoDoctor provides repository diagnostics across eight weighted categories:
 
 | Category | Weight |
-|---|---:|
+| --- | ---: |
 | Security | 25% |
 | Repository | 12% |
 | Testing | 18% |
@@ -45,8 +52,6 @@ RepoDoctor provides repository diagnostics across eight weighted categories:
 | Architecture | 5% |
 
 The result is both an overall repository health score and a prioritized explanation of the problems responsible for that score.
-
----
 
 ## Highlights
 
@@ -71,8 +76,6 @@ The result is both an overall repository health score and a prioritized explanat
 - CI quality gates
 - English and Turkish interfaces
 - Interactive terminal Intelligence Console
-
----
 
 ## Intelligence Console
 
@@ -115,8 +118,6 @@ Q        Quit
 ```
 
 The interactive UI currently operates on local repositories.
-
----
 
 ## CLI
 
@@ -172,8 +173,6 @@ repodoctor scan . \
     --output repodoctor-report.html
 ```
 
----
-
 ## Quality Gates
 
 RepoDoctor can be used as a CI quality gate.
@@ -198,8 +197,6 @@ repodoctor scan . \
     --fail-on warning
 ```
 
----
-
 ## Safe Autofix Philosophy
 
 RepoDoctor separates repair suggestions into two classes.
@@ -215,8 +212,6 @@ Changes requiring human judgment.
 REVIEW fixes are never automatically applied.
 
 The autofix system is intentionally conservative: repository modification should be safer than the recommendation that triggered it.
-
----
 
 ## Security
 
@@ -234,8 +229,6 @@ RepoDoctor is not a replacement for a dedicated security audit, professional pen
 
 See [SECURITY.md](SECURITY.md) for vulnerability reporting guidance.
 
----
-
 ## Architecture Intelligence
 
 Supported architecture diagnostics include signals such as:
@@ -249,8 +242,6 @@ Supported architecture diagnostics include signals such as:
 - Conventional source-tree structure
 
 Architecture checks are intended to surface maintainability risks rather than mandate a single coding style.
-
----
 
 ## Supported Project Detection
 
@@ -269,21 +260,21 @@ RepoDoctor currently recognizes common repository markers for technologies inclu
 
 Technology-specific intelligence will continue to expand.
 
----
-
 ## Download & Installation
 
 RepoDoctor is distributed as prebuilt application packages. The proprietary implementation source code is not required to use the application.
 
 ### Linux x86_64
 
-**Status:** Verified
+**Status:** Verified  
 **Minimum build target:** glibc 2.31+
 
-Download from the GitHub Releases page:
+**Official release:** [RepoDoctor v0.1.0](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.0)
 
-- `RepoDoctor-v0.1.0-linux-x86_64.tar.gz`
-- `SHA256SUMS.txt`
+Download:
+
+- [`RepoDoctor-v0.1.0-linux-x86_64.tar.gz`](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.0/RepoDoctor-v0.1.0-linux-x86_64.tar.gz)
+- [`SHA256SUMS.txt`](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.0/SHA256SUMS.txt)
 
 Extract:
 
@@ -308,13 +299,13 @@ Verify the archive:
 sha256sum -c SHA256SUMS.txt
 ```
 
-### Windows
+### Platform Support
 
-**Status:** Not yet officially verified or released.
-
-### macOS
-
-**Status:** Not yet officially verified or released.
+| Platform | Status |
+| --- | --- |
+| Linux x86_64 | Verified · glibc 2.31+ |
+| Windows | Not yet officially verified or released |
+| macOS | Not yet officially verified or released |
 
 ### Source Distribution
 
@@ -323,8 +314,6 @@ The complete RepoDoctor implementation is not distributed as source code through
 Official binaries are built from the privately maintained BLCCoreStudio development repository and published as reviewed release artifacts.
 
 The public repository is not intended to be a buildable copy of the proprietary RepoDoctor engine.
-
----
 
 ## Public Repository Model
 
@@ -353,7 +342,7 @@ Public repository
 
 The public export is whitelist-controlled to reduce the risk of accidentally publishing proprietary implementation files.
 
----
+The public repository validation workflow checks required public files, enforces the tracked-file whitelist, rejects sensitive file types, and blocks designated private implementation paths.
 
 ## Public Source Disclosure
 
@@ -362,8 +351,6 @@ Files visible in this repository are intentionally selected for public inspectio
 Their visibility does **not** imply that the complete RepoDoctor implementation is open source.
 
 No rights beyond those explicitly stated in the repository license are granted.
-
----
 
 ## Current Limitations
 
@@ -377,21 +364,15 @@ Current limitations include:
 - Technology-specific depth varies by ecosystem.
 - Repository health scores are engineering signals, not proof of correctness or security.
 
----
-
 ## Release History
 
 See [CHANGELOG.md](CHANGELOG.md).
-
----
 
 ## Security Reports
 
 Please review [SECURITY.md](SECURITY.md) before reporting a security issue.
 
 Do not include credentials, private keys, API tokens, or confidential repository data in public reports.
-
----
 
 ## Rights and Licensing
 
@@ -407,4 +388,10 @@ See [LICENSE](LICENSE) for the applicable terms.
 
 ---
 
+<div align="center">
+
 **Built by BLCCoreStudio.**
+
+[Release](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.0) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [License](LICENSE)
+
+</div>

@@ -271,13 +271,58 @@ Technology-specific intelligence will continue to expand.
 
 ---
 
-## Distribution
+## Download & Installation
 
-The complete RepoDoctor implementation is **not distributed as source code through this public repository**.
+RepoDoctor is distributed as prebuilt application packages. The proprietary implementation source code is not required to use the application.
 
-Official installation packages and release artifacts, when made available, will be published through BLCCoreStudio-controlled distribution channels and/or the GitHub Releases section of this repository.
+### Linux x86_64
 
-Do not treat the contents of this repository as a buildable copy of the commercial RepoDoctor engine.
+**Status:** Verified
+**Minimum build target:** glibc 2.31+
+
+Download from the GitHub Releases page:
+
+- `RepoDoctor-v0.1.0-linux-x86_64.tar.gz`
+- `SHA256SUMS.txt`
+
+Extract:
+
+```bash
+tar -xzf RepoDoctor-v0.1.0-linux-x86_64.tar.gz
+cd RepoDoctor-v0.1.0-linux-x86_64
+```
+
+Run:
+
+```bash
+./repodoctor version
+./repodoctor scan .
+./repodoctor ui .
+```
+
+No Python installation, virtual environment, pip, or uv is required.
+
+Verify the archive:
+
+```bash
+sha256sum -c SHA256SUMS.txt
+```
+
+### Windows
+
+**Status:** Not yet officially verified or released.
+
+### macOS
+
+**Status:** Not yet officially verified or released.
+
+### Source Distribution
+
+The complete RepoDoctor implementation is not distributed as source code through this public repository.
+
+Official binaries are built from the privately maintained BLCCoreStudio development repository and published as reviewed release artifacts.
+
+The public repository is not intended to be a buildable copy of the proprietary RepoDoctor engine.
 
 ---
 

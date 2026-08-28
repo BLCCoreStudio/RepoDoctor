@@ -25,5 +25,26 @@ jobs:
         uses: ./
         with:
           path: .
+          fail-under: "0"
           format: json
           language: en
+
+      - name: Reject invalid score gate
+        id: invalid-score-gate
+        continue-on-error: true
+        uses: ./
+        with:
+          path: .
+          fail-under: "101"
+
+      - name: Assert invalid score gate failed
+        if: always()
+        shell: bash
+        env:
+          INVALID_SCORE_OUTCOME: ${{ steps.invalid-score-gate.outcome }}
+        run: |
+          set -euo pipefail
+          if [[ "$INVALID_SCORE_OUTCOME" != "failure" ]]; then
+            echo "Expected invalid fail-under input to fail, got: $INVALID_SCORE_OUTCOME"
+            exit 1
+          fi

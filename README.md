@@ -2,7 +2,7 @@
 
 # RepoDoctor
 
-### Professional repository intelligence by BLCCoreStudio
+### Repository health analyzer for security, testing, CI/CD, dependencies, documentation, and architecture
 
 [![Version](https://img.shields.io/badge/version-0.1.0-5B5BD6?style=for-the-badge)](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.0)
 ![Status](https://img.shields.io/badge/status-alpha-0891B2?style=for-the-badge)
@@ -10,7 +10,7 @@
 ![Build Target](https://img.shields.io/badge/glibc-2.31%2B-2563EB?style=for-the-badge)
 [![License](https://img.shields.io/badge/license-proprietary-7C3AED?style=for-the-badge)](LICENSE)
 
-**Analyze repository health. Understand what is wrong. Fix what matters first.**
+**Analyze repository health, prioritize code-quality findings, and fix what matters first from the CLI or interactive terminal interface.**
 
 [Release v0.1.0](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.0) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
 
@@ -18,7 +18,7 @@
 
 ---
 
-RepoDoctor analyzes software repositories and turns repository health into actionable diagnostics across **security, testing, documentation, CI/CD, dependencies, configuration, repository structure, and architecture**.
+RepoDoctor is a developer tool for repository analysis and code health diagnostics across **security, testing, documentation, CI/CD, dependencies, configuration, repository structure, and architecture**. It combines repository-level static analysis signals with prioritized findings so you can understand what is wrong, why it matters, and what to fix first in local projects or GitHub repositories.
 
 It is designed around three questions:
 
@@ -26,15 +26,32 @@ It is designed around three questions:
 > **What is wrong with it?**  
 > **What should be fixed first?**
 
+## Quick Start
+
+Download and extract the verified [RepoDoctor v0.1.0 Linux release](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.0), then run:
+
+```bash
+# Scan the current repository
+./repodoctor scan .
+
+# Analyze a public GitHub repository
+./repodoctor scan https://github.com/owner/repository
+
+# Open the interactive terminal interface for a local repository
+./repodoctor ui .
+```
+
+No Python installation, virtual environment, pip, or uv is required for the prebuilt Linux package.
+
 ## Public Preview
 
 **Current version:** `0.1.0`  
 **Status:** Alpha
 
 > [!IMPORTANT]
-> This repository is the official public preview and product showcase for RepoDoctor. The complete RepoDoctor analysis engine is proprietary and is developed in a separate private repository.
+> This repository is the official public home, product showcase, and release distribution point for the RepoDoctor alpha preview. The complete RepoDoctor analysis engine is proprietary and is developed in a separate private repository.
 
-This public repository intentionally contains selected documentation, release information, security policy, and limited non-core showcase material only. It is **not** the complete RepoDoctor source distribution.
+This public repository contains verified release binaries and checksums, product documentation, release history, security policy, and selected non-core showcase material. The proprietary core engine is not distributed here as source code, but the published RepoDoctor application can be downloaded and used directly from the official release artifacts.
 
 ## What RepoDoctor Does
 
@@ -64,6 +81,7 @@ The result is both an overall repository health score and a prioritized explanat
 - Dependency diagnostics
 - Configuration analysis
 - Architecture diagnostics
+- Repository-level static analysis signals
 - Local repository scanning
 - GitHub repository scanning
 - Stable diagnostic rule IDs

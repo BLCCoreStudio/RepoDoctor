@@ -1,5 +1,5 @@
 name: "RepoDoctor CI"
-description: "Repository health score and CI quality gates for security, testing, dependencies, docs, config and architecture."
+description: "Score repository health and enforce CI quality gates across security, tests, dependencies, docs and architecture."
 author: "BLCCoreStudio"
 
 branding:

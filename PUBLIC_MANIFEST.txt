@@ -18,5 +18,6 @@ SECURITY.md
 SUPPORT.md
 action-entrypoint.sh
 action.yml
+docs/repodoctor-intelligence-console.svg
 src/repodoctor/__init__.py
 src/repodoctor/tui.tcss

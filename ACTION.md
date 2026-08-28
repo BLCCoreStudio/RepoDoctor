@@ -2,7 +2,7 @@
 
 **Marketplace name:** `RepoDoctor CI`
 
-RepoDoctor runs as a published GitHub Marketplace Action against a repository already checked out on the runner. The current Marketplace release is `v0.1.2`.
+RepoDoctor runs as a published GitHub Marketplace Action against a repository already checked out on the runner. The current Marketplace presentation release is `v0.1.3`; it continues to execute the verified RepoDoctor `0.1.1` engine.
 
 ## What it does
 
@@ -18,7 +18,7 @@ The current Marketplace release supports GitHub Actions runners with:
 - x86_64 architecture
 - `curl`, `sha256sum`, `tar`, `find`, and `realpath`
 
-The wrapper currently pins the RepoDoctor `0.1.1` Linux x86_64 engine release and verifies the downloaded archive against its published SHA-256 digest before execution.
+The wrapper pins the RepoDoctor `0.1.1` Linux x86_64 engine release and verifies the downloaded archive against its published SHA-256 digest before execution.
 
 ## Recommended workflow permissions
 
@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Run RepoDoctor
-        uses: BLCCoreStudio/RepoDoctor@v0.1.2
+        uses: BLCCoreStudio/RepoDoctor@v0.1.3
         with:
           path: .
           fail-under: "80"
@@ -84,7 +84,7 @@ For development of the Action itself, this repository tests the local Action wit
 Report only:
 
 ```yaml
-- uses: BLCCoreStudio/RepoDoctor@v0.1.2
+- uses: BLCCoreStudio/RepoDoctor@v0.1.3
   with:
     format: json
 ```
@@ -92,7 +92,7 @@ Report only:
 Require a score of at least 85:
 
 ```yaml
-- uses: BLCCoreStudio/RepoDoctor@v0.1.2
+- uses: BLCCoreStudio/RepoDoctor@v0.1.3
   with:
     fail-under: "85"
 ```
@@ -100,7 +100,7 @@ Require a score of at least 85:
 Fail on error-level findings:
 
 ```yaml
-- uses: BLCCoreStudio/RepoDoctor@v0.1.2
+- uses: BLCCoreStudio/RepoDoctor@v0.1.3
   with:
     fail-on: error
 ```
@@ -117,7 +117,8 @@ The Action wrapper:
 - rejects scan targets outside `GITHUB_WORKSPACE`
 - passes user inputs as shell arguments without `eval`
 - uses a temporary working directory and removes it on exit
-- does not require a GitHub token for a local checked-out repository scan
+- does not require a RepoDoctor account or RepoDoctor API key for a local checked-out repository scan
+- does not require repository write permissions for the documented workflow
 
 The RepoDoctor engine remains proprietary software distributed through the official RepoDoctor release artifacts. See [LICENSE](LICENSE) and [SECURITY.md](SECURITY.md).
 

@@ -12,7 +12,7 @@
 
 **Analyze repository health, prioritize code-quality findings, and fix what matters first from the CLI or interactive terminal interface.**
 
-[Release v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
+[Release v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [GitHub Action](ACTION.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -43,9 +43,46 @@ Download and extract the verified [RepoDoctor v0.1.1 Linux release](https://gith
 
 No Python installation, virtual environment, pip, or uv is required for the prebuilt Linux package.
 
+## GitHub Action
+
+The Marketplace Action is named **RepoDoctor CI**. It runs RepoDoctor against a repository already checked out on a Linux x86_64 GitHub Actions runner and supports repository-score and finding-severity quality gates.
+
+The Action wrapper is security-conscious: it uses read-only workflow permissions, pins the RepoDoctor engine release and SHA-256 digest, bounds network retries/timeouts, validates archive paths before extraction, and restricts scan targets to `GITHUB_WORKSPACE`.
+
+After the first Marketplace release is published, use the published tag rather than `main`:
+
+```yaml
+name: Repository Health
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  repodoctor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Run RepoDoctor
+        uses: BLCCoreStudio/RepoDoctor@<published-tag>
+        with:
+          path: .
+          fail-under: "80"
+          fail-on: warning
+```
+
+See [ACTION.md](ACTION.md) for inputs, examples, security details, and current limitations.
+
 ## Public Preview
 
-**Current version:** `0.1.1`
+**Current version:** `0.1.1`  
 **Status:** Alpha
 
 > [!IMPORTANT]
@@ -380,6 +417,7 @@ Current limitations include:
 - Autofix intentionally supports a conservative subset of repository modifications.
 - Secret detection is pattern-based.
 - Technology-specific depth varies by ecosystem.
+- The Marketplace Action currently supports Linux x86_64 runners only.
 - Repository health scores are engineering signals, not proof of correctness or security.
 
 ## Release History
@@ -410,6 +448,6 @@ See [LICENSE](LICENSE) for the applicable terms.
 
 **Built by BLCCoreStudio.**
 
-[Release](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [License](LICENSE)
+[Release](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [GitHub Action](ACTION.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [License](LICENSE)
 
 </div>

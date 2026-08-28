@@ -1,5 +1,5 @@
 name: "RepoDoctor CI"
-description: "Scan a checked-out repository for health, security, testing, CI/CD, dependency, documentation, configuration, and architecture findings."
+description: "Repository health checks for security, testing, CI/CD, dependencies, docs, configuration and architecture."
 author: "BLCCoreStudio"
 
 branding:

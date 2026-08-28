@@ -30,10 +30,13 @@ jobs:
 
           required_files=(
             "README.md"
+            "ACTION.md"
             "LICENSE"
             "SECURITY.md"
             "CHANGELOG.md"
             "PUBLIC_MANIFEST.txt"
+            "action.yml"
+            "action-entrypoint.sh"
           )
 
           for file in "${required_files[@]}"; do
@@ -42,6 +45,12 @@ jobs:
               exit 1
             fi
           done
+
+      - name: Validate Action entrypoint syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n action-entrypoint.sh
 
       - name: Enforce public whitelist
         shell: bash

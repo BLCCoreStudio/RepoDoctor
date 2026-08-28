@@ -121,6 +121,14 @@ The Action wrapper:
 
 The RepoDoctor engine remains proprietary software distributed through the official RepoDoctor release artifacts. See [LICENSE](LICENSE) and [SECURITY.md](SECURITY.md).
 
+## Legal, Privacy, and Support
+
+Use of RepoDoctor and RepoDoctor CI is subject to the [RepoDoctor EULA](EULA.md).
+
+The current Action data-handling model is described in [PRIVACY.md](PRIVACY.md). General support is available through the channels in [SUPPORT.md](SUPPORT.md), while suspected security vulnerabilities must follow [SECURITY.md](SECURITY.md).
+
+Do not publish credentials, access tokens, private keys, confidential repository contents, or vulnerability details in public support issues.
+
 ## Current limitations
 
 - The Marketplace Action has not yet been published as a stable release.

@@ -4,7 +4,8 @@
 
 ### Repository health analyzer for security, testing, CI/CD, dependencies, documentation, and architecture
 
-[![Version](https://img.shields.io/badge/version-0.1.1-5B5BD6?style=for-the-badge)](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1)
+[![Engine](https://img.shields.io/badge/engine-0.1.1-5B5BD6?style=for-the-badge)](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1)
+[![Marketplace Action](https://img.shields.io/badge/Marketplace-v0.1.2-1F6FEB?style=for-the-badge&logo=github)](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.2)
 ![Status](https://img.shields.io/badge/status-alpha-0891B2?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/platform-Linux%20x86__64-111827?style=for-the-badge&logo=linux&logoColor=white)
 ![Build Target](https://img.shields.io/badge/glibc-2.31%2B-2563EB?style=for-the-badge)
@@ -12,7 +13,7 @@
 
 **Analyze repository health, prioritize code-quality findings, and fix what matters first from the CLI or interactive terminal interface.**
 
-[Release v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [GitHub Action](ACTION.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
+[Engine v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Marketplace Action v0.1.2](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.2) · [Action docs](ACTION.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md)
 
 </div>
 
@@ -34,7 +35,7 @@ The preview above is derived from the verified Textual release-candidate render 
 
 ## Quick Start
 
-Download and extract the verified [RepoDoctor v0.1.1 Linux release](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1), then run:
+Download and extract the verified [RepoDoctor v0.1.1 Linux engine release](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1), then run:
 
 ```bash
 # Scan the current repository
@@ -49,13 +50,15 @@ Download and extract the verified [RepoDoctor v0.1.1 Linux release](https://gith
 
 No Python installation, virtual environment, pip, or uv is required for the prebuilt Linux package.
 
-## GitHub Action
+## GitHub Marketplace Action
 
-The Marketplace Action is named **RepoDoctor CI**. It runs RepoDoctor against a repository already checked out on a Linux x86_64 GitHub Actions runner and supports repository-score and finding-severity quality gates.
+**RepoDoctor CI** is published as a GitHub Marketplace Action. The current Action release is `v0.1.2` and it executes the verified RepoDoctor `0.1.1` Linux x86_64 engine.
+
+It runs RepoDoctor against a repository already checked out on a Linux x86_64 GitHub Actions runner and supports repository-score and finding-severity quality gates.
 
 The Action wrapper is security-conscious: it uses read-only workflow permissions, pins the RepoDoctor engine release and SHA-256 digest, bounds network retries/timeouts, validates archive paths before extraction, and restricts scan targets to `GITHUB_WORKSPACE`.
 
-After the first Marketplace release is published, use the published tag rather than `main`:
+Pin the Action to the published release tag rather than `main`:
 
 ```yaml
 name: Repository Health
@@ -77,7 +80,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Run RepoDoctor
-        uses: BLCCoreStudio/RepoDoctor@<published-tag>
+        uses: BLCCoreStudio/RepoDoctor@v0.1.2
         with:
           path: .
           fail-under: "80"
@@ -88,13 +91,14 @@ See [ACTION.md](ACTION.md) for inputs, examples, security details, and current l
 
 ## Public Preview
 
-**Current version:** `0.1.1`  
-**Status:** Alpha
+**RepoDoctor engine:** `0.1.1`  
+**Marketplace Action:** `0.1.2`  
+**Engine status:** Alpha
 
 > [!IMPORTANT]
-> This repository is the official public home, product showcase, and release distribution point for the RepoDoctor alpha preview. The complete RepoDoctor analysis engine is proprietary and is developed in a separate private repository.
+> This repository is the official public home, product showcase, Marketplace Action source, and release distribution point for RepoDoctor. The complete RepoDoctor analysis engine is proprietary and is developed in a separate private repository.
 
-This public repository contains verified release binaries and checksums, product documentation, release history, security policy, and selected non-core showcase material. The proprietary core engine is not distributed here as source code, but the published RepoDoctor application can be downloaded and used directly from the official release artifacts.
+This public repository contains the Marketplace Action wrapper, verified engine release binaries and checksums, product documentation, release history, security policy, and selected non-core showcase material. The proprietary core engine is not distributed here as source code, but the published RepoDoctor application can be downloaded and used directly from the official release artifacts.
 
 ## What RepoDoctor Does
 
@@ -137,6 +141,7 @@ The result is both an overall repository health score and a prioritized explanat
 - CI quality gates
 - English and Turkish interfaces
 - Interactive terminal Intelligence Console
+- Published GitHub Marketplace Action
 
 ## Intelligence Console
 
@@ -330,7 +335,7 @@ RepoDoctor is distributed as prebuilt application packages. The proprietary impl
 **Status:** Verified  
 **Minimum build target:** glibc 2.31+
 
-**Official release:** [RepoDoctor v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1)
+**Official engine release:** [RepoDoctor v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1)
 
 Download:
 
@@ -394,6 +399,7 @@ Private development repository
 
 Public repository
         │
+        ├── Marketplace Action wrapper
         ├── product documentation
         ├── release history
         ├── security policy
@@ -415,7 +421,7 @@ No rights beyond those explicitly stated in the repository license are granted.
 
 ## Current Limitations
 
-RepoDoctor `0.1.1` is an alpha release.
+RepoDoctor engine `0.1.1` remains alpha. RepoDoctor CI `v0.1.2` is the current published Marketplace Action wrapper.
 
 Current limitations include:
 
@@ -454,6 +460,6 @@ See [LICENSE](LICENSE) for the applicable terms.
 
 **Built by BLCCoreStudio.**
 
-[Release](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [GitHub Action](ACTION.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [License](LICENSE)
+[Engine v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Marketplace Action v0.1.2](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.2) · [Action docs](ACTION.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [License](LICENSE)
 
 </div>

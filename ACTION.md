@@ -2,7 +2,7 @@
 
 **Marketplace name:** `RepoDoctor CI`
 
-RepoDoctor can run as a GitHub Action against the repository already checked out on the runner. The Action is currently a Marketplace-readiness preview and has not yet been published as a stable Marketplace release.
+RepoDoctor runs as a published GitHub Marketplace Action against a repository already checked out on the runner. The current Marketplace release is `v0.1.2`.
 
 ## What it does
 
@@ -12,13 +12,13 @@ Current scan areas include security, repository structure, testing, documentatio
 
 ## Requirements
 
-The current preview supports GitHub Actions runners with:
+The current Marketplace release supports GitHub Actions runners with:
 
 - Linux
 - x86_64 architecture
 - `curl`, `sha256sum`, `tar`, `find`, and `realpath`
 
-The wrapper currently pins the RepoDoctor `0.1.1` Linux x86_64 release and verifies the downloaded archive against its published SHA-256 digest before execution.
+The wrapper currently pins the RepoDoctor `0.1.1` Linux x86_64 engine release and verifies the downloaded archive against its published SHA-256 digest before execution.
 
 ## Recommended workflow permissions
 
@@ -35,7 +35,7 @@ Do not grant write permissions unless a future RepoDoctor feature explicitly req
 
 A consuming workflow must check out the repository before running RepoDoctor. RepoDoctor restricts the scan target to a directory inside `GITHUB_WORKSPACE` so an accidental Action input cannot scan unrelated runner paths.
 
-After a Marketplace release is published, pin the Action to the published release tag rather than `main`:
+Pin the Action to the published Marketplace release tag rather than `main`:
 
 ```yaml
 name: Repository Health
@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Run RepoDoctor
-        uses: BLCCoreStudio/RepoDoctor@<published-tag>
+        uses: BLCCoreStudio/RepoDoctor@v0.1.2
         with:
           path: .
           fail-under: "80"
@@ -84,7 +84,7 @@ For development of the Action itself, this repository tests the local Action wit
 Report only:
 
 ```yaml
-- uses: BLCCoreStudio/RepoDoctor@<published-tag>
+- uses: BLCCoreStudio/RepoDoctor@v0.1.2
   with:
     format: json
 ```
@@ -92,7 +92,7 @@ Report only:
 Require a score of at least 85:
 
 ```yaml
-- uses: BLCCoreStudio/RepoDoctor@<published-tag>
+- uses: BLCCoreStudio/RepoDoctor@v0.1.2
   with:
     fail-under: "85"
 ```
@@ -100,7 +100,7 @@ Require a score of at least 85:
 Fail on error-level findings:
 
 ```yaml
-- uses: BLCCoreStudio/RepoDoctor@<published-tag>
+- uses: BLCCoreStudio/RepoDoctor@v0.1.2
   with:
     fail-on: error
 ```
@@ -131,9 +131,8 @@ Do not publish credentials, access tokens, private keys, confidential repository
 
 ## Current limitations
 
-- The Marketplace Action has not yet been published as a stable release.
 - The Action wrapper currently supports Linux x86_64 runners only.
-- The pinned engine version is currently `0.1.1`, which is an alpha pre-release.
+- The pinned RepoDoctor engine version is `0.1.1`, which remains alpha.
 - This Action is not a GitHub App. Using the Action does not create a GitHub App installation.
 - Marketplace pricing plans apply to GitHub Apps/OAuth apps, not this Action wrapper.
 

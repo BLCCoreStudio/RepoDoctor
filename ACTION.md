@@ -1,5 +1,7 @@
 # RepoDoctor GitHub Action
 
+**Marketplace name:** `RepoDoctor CI`
+
 RepoDoctor can run as a GitHub Action against the repository already checked out on the runner. The Action is currently a Marketplace-readiness preview and has not yet been published as a stable Marketplace release.
 
 ## What it does
@@ -14,7 +16,7 @@ The current preview supports GitHub Actions runners with:
 
 - Linux
 - x86_64 architecture
-- `curl`, `sha256sum`, `tar`, and `find`
+- `curl`, `sha256sum`, `tar`, `find`, and `realpath`
 
 The wrapper currently pins the RepoDoctor `0.1.1` Linux x86_64 release and verifies the downloaded archive against its published SHA-256 digest before execution.
 
@@ -31,7 +33,7 @@ Do not grant write permissions unless a future RepoDoctor feature explicitly req
 
 ## Usage
 
-A consuming workflow must check out the repository before running RepoDoctor.
+A consuming workflow must check out the repository before running RepoDoctor. RepoDoctor restricts the scan target to a directory inside `GITHUB_WORKSPACE` so an accidental Action input cannot scan unrelated runner paths.
 
 After a Marketplace release is published, pin the Action to the published release tag rather than `main`:
 
@@ -50,9 +52,10 @@ permissions:
 jobs:
   repodoctor:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Run RepoDoctor
         uses: BLCCoreStudio/RepoDoctor@<published-tag>
@@ -70,7 +73,7 @@ For development of the Action itself, this repository tests the local Action wit
 
 | Input | Required | Default | Description |
 | --- | --- | --- | --- |
-| `path` | No | `.` | Checked-out repository directory to scan. |
+| `path` | No | `.` | Checked-out repository directory to scan. It must resolve inside `GITHUB_WORKSPACE`. |
 | `fail-under` | No | empty | Minimum accepted repository score from `0` to `100`. Empty disables the score gate. |
 | `fail-on` | No | empty | Fail at `info`, `warning`, or `error` severity. Empty keeps report-only behavior. |
 | `format` | No | `terminal` | `terminal` or `json`. |
@@ -106,8 +109,12 @@ Fail on error-level findings:
 
 The Action wrapper:
 
-- downloads the pinned RepoDoctor release over HTTPS
+- downloads a fixed RepoDoctor engine release over HTTPS
+- uses connection and total download time limits plus bounded retries
 - verifies the release archive with a pinned SHA-256 digest before execution
+- inspects archive paths before extraction and rejects absolute or traversal paths
+- extracts without preserving archive ownership or permissions
+- rejects scan targets outside `GITHUB_WORKSPACE`
 - passes user inputs as shell arguments without `eval`
 - uses a temporary working directory and removes it on exit
 - does not require a GitHub token for a local checked-out repository scan
@@ -120,5 +127,6 @@ The RepoDoctor engine remains proprietary software distributed through the offic
 - The Action wrapper currently supports Linux x86_64 runners only.
 - The pinned engine version is currently `0.1.1`, which is an alpha pre-release.
 - This Action is not a GitHub App. Using the Action does not create a GitHub App installation.
+- Marketplace pricing plans apply to GitHub Apps/OAuth apps, not this Action wrapper.
 
 These limitations will remain explicit until the corresponding capabilities are implemented and verified.

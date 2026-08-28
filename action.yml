@@ -1,4 +1,4 @@
-name: "RepoDoctor Repository Health"
+name: "RepoDoctor Repository Health by BLCCoreStudio"
 description: "Scan a checked-out repository for health, security, testing, CI/CD, dependency, documentation, configuration, and architecture findings."
 author: "BLCCoreStudio"
 

@@ -36,8 +36,11 @@ jobs:
           required_files=(
             "README.md"
             "ACTION.md"
+            "EULA.md"
             "LICENSE"
+            "PRIVACY.md"
             "SECURITY.md"
+            "SUPPORT.md"
             "CHANGELOG.md"
             "PUBLIC_MANIFEST.txt"
             "action.yml"

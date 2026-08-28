@@ -1,0 +1,42 @@
+name: "RepoDoctor Repository Health"
+description: "Scan a checked-out repository for health, security, testing, CI/CD, dependency, documentation, configuration, and architecture findings."
+author: "BLCCoreStudio"
+
+branding:
+  icon: "activity"
+  color: "blue"
+
+inputs:
+  path:
+    description: "Repository path to scan. The repository must already be checked out."
+    required: false
+    default: "."
+  fail-under:
+    description: "Optional minimum repository health score (0-100). Leave empty to disable this gate."
+    required: false
+    default: ""
+  fail-on:
+    description: "Optional finding severity that should fail the job: info, warning, or error. Leave empty for report-only mode."
+    required: false
+    default: ""
+  format:
+    description: "Report format written to the Actions log: terminal or json."
+    required: false
+    default: "terminal"
+  language:
+    description: "RepoDoctor interface language: en or tr."
+    required: false
+    default: "en"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run RepoDoctor
+      shell: bash
+      env:
+        REPODOCTOR_INPUT_PATH: ${{ inputs.path }}
+        REPODOCTOR_INPUT_FAIL_UNDER: ${{ inputs.fail-under }}
+        REPODOCTOR_INPUT_FAIL_ON: ${{ inputs.fail-on }}
+        REPODOCTOR_INPUT_FORMAT: ${{ inputs.format }}
+        REPODOCTOR_INPUT_LANGUAGE: ${{ inputs.language }}
+      run: bash "$GITHUB_ACTION_PATH/action-entrypoint.sh"

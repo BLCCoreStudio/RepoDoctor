@@ -2,63 +2,24 @@
 
 # RepoDoctor
 
-### Repository health analyzer for security, testing, CI/CD, dependencies, documentation, and architecture
+### Repository health scores and CI quality gates for GitHub Actions
 
+[![Marketplace Action](https://img.shields.io/badge/Marketplace-v0.1.3-1F6FEB?style=for-the-badge&logo=github)](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.3)
 [![Engine](https://img.shields.io/badge/engine-0.1.1-5B5BD6?style=for-the-badge)](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1)
-[![Marketplace Action](https://img.shields.io/badge/Marketplace-v0.1.2-1F6FEB?style=for-the-badge&logo=github)](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.2)
 ![Status](https://img.shields.io/badge/status-alpha-0891B2?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/platform-Linux%20x86__64-111827?style=for-the-badge&logo=linux&logoColor=white)
-![Build Target](https://img.shields.io/badge/glibc-2.31%2B-2563EB?style=for-the-badge)
-[![License](https://img.shields.io/badge/license-proprietary-7C3AED?style=for-the-badge)](LICENSE)
 
-**Analyze repository health, prioritize code-quality findings, and fix what matters first from the CLI or interactive terminal interface.**
+**Score repository health, surface prioritized findings, and stop CI when quality drops below the standards you choose.**
 
-[Engine v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Marketplace Action v0.1.2](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.2) · [Action docs](ACTION.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md)
+[Marketplace Action v0.1.3](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.3) · [Action docs](ACTION.md) · [Engine v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Security](SECURITY.md) · [Support](SUPPORT.md)
 
 </div>
 
 ---
 
-RepoDoctor is a developer tool for repository analysis and code health diagnostics across **security, testing, documentation, CI/CD, dependencies, configuration, repository structure, and architecture**. It combines repository-level static analysis signals with prioritized findings so you can understand what is wrong, why it matters, and what to fix first in local projects or GitHub repositories.
+## GitHub Actions — Quick setup
 
-It is designed around three questions:
-
-> **How healthy is this repository?**  
-> **What is wrong with it?**  
-> **What should be fixed first?**
-
-## Intelligence Console Preview
-
-![RepoDoctor Intelligence Console](docs/repodoctor-intelligence-console.svg)
-
-The preview above is derived from the verified Textual release-candidate render against a controlled example repository. Repository scores and findings vary with the project being analyzed.
-
-## Quick Start
-
-Download and extract the verified [RepoDoctor v0.1.1 Linux engine release](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1), then run:
-
-```bash
-# Scan the current repository
-./repodoctor scan .
-
-# Analyze a public GitHub repository
-./repodoctor scan https://github.com/owner/repository
-
-# Open the interactive terminal interface for a local repository
-./repodoctor ui .
-```
-
-No Python installation, virtual environment, pip, or uv is required for the prebuilt Linux package.
-
-## GitHub Marketplace Action
-
-**RepoDoctor CI** is published as a GitHub Marketplace Action. The current Action release is `v0.1.2` and it executes the verified RepoDoctor `0.1.1` Linux x86_64 engine.
-
-It runs RepoDoctor against a repository already checked out on a Linux x86_64 GitHub Actions runner and supports repository-score and finding-severity quality gates.
-
-The Action wrapper is security-conscious: it uses read-only workflow permissions, pins the RepoDoctor engine release and SHA-256 digest, bounds network retries/timeouts, validates archive paths before extraction, and restricts scan targets to `GITHUB_WORKSPACE`.
-
-Pin the Action to the published release tag rather than `main`:
+RepoDoctor CI analyzes a checked-out repository inside GitHub Actions and can enforce a minimum repository-health score or fail on findings at a selected severity.
 
 ```yaml
 name: Repository Health
@@ -80,25 +41,85 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Run RepoDoctor
-        uses: BLCCoreStudio/RepoDoctor@v0.1.2
+        uses: BLCCoreStudio/RepoDoctor@v0.1.3
         with:
           path: .
           fail-under: "80"
           fail-on: warning
 ```
 
-See [ACTION.md](ACTION.md) for inputs, examples, security details, and current limitations.
+### Trust by default
 
-## Public Preview
+- **No RepoDoctor account required** for the Marketplace Action.
+- **No RepoDoctor API key required** for a local checked-out repository scan.
+- **Read-only workflow permissions are sufficient** for the documented setup.
+- **No repository write permission is required** by RepoDoctor CI.
+- The Action downloads a **fixed engine release and verifies its SHA-256 digest** before execution.
+- Scan targets are restricted to directories inside **`GITHUB_WORKSPACE`**.
 
-**RepoDoctor engine:** `0.1.1`  
-**Marketplace Action:** `0.1.2`  
-**Engine status:** Alpha
+See [ACTION.md](ACTION.md) for every input, security detail, and example.
 
-> [!IMPORTANT]
-> This repository is the official public home, product showcase, Marketplace Action source, and release distribution point for RepoDoctor. The complete RepoDoctor analysis engine is proprietary and is developed in a separate private repository.
+## What you get
 
-This public repository contains the Marketplace Action wrapper, verified engine release binaries and checksums, product documentation, release history, security policy, and selected non-core showcase material. The proprietary core engine is not distributed here as source code, but the published RepoDoctor application can be downloaded and used directly from the official release artifacts.
+RepoDoctor turns repository-wide engineering signals into a single health view and prioritized findings across:
+
+- Security
+- Repository structure
+- Testing
+- Documentation
+- CI/CD
+- Dependencies
+- Configuration
+- Architecture
+
+Use it as a report-only Action, enforce a minimum score with `fail-under`, or fail CI on a selected finding severity with `fail-on`.
+
+RepoDoctor also provides a standalone CLI and interactive terminal interface for deeper local inspection.
+
+## Intelligence Console Preview
+
+![RepoDoctor Intelligence Console](docs/repodoctor-intelligence-console.svg)
+
+The preview above is derived from the verified Textual release-candidate render against a controlled example repository. Repository scores and findings vary with the project being analyzed.
+
+## Why RepoDoctor
+
+RepoDoctor is designed around three practical questions:
+
+> **How healthy is this repository?**  
+> **What is wrong with it?**  
+> **What should be fixed first?**
+
+Instead of exposing isolated checks without context, RepoDoctor combines repository-level static-analysis signals with weighted category scores and prioritized findings so teams can decide what matters first.
+
+## Action inputs
+
+| Input | Required | Default | Description |
+| --- | --- | --- | --- |
+| `path` | No | `.` | Checked-out repository directory to scan. Must resolve inside `GITHUB_WORKSPACE`. |
+| `fail-under` | No | empty | Minimum accepted repository score from `0` to `100`. |
+| `fail-on` | No | empty | Fail at `info`, `warning`, or `error` severity. |
+| `format` | No | `terminal` | `terminal` or `json`. |
+| `language` | No | `en` | `en` or `tr`. |
+
+The current Marketplace Action supports Linux x86_64 GitHub Actions runners and executes the verified RepoDoctor `0.1.1` engine.
+
+## Local CLI Quick Start
+
+Download and extract the verified [RepoDoctor v0.1.1 Linux engine release](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1), then run:
+
+```bash
+# Scan the current repository
+./repodoctor scan .
+
+# Analyze a public GitHub repository
+./repodoctor scan https://github.com/owner/repository
+
+# Open the interactive terminal interface
+./repodoctor ui .
+```
+
+No Python installation, virtual environment, pip, or uv is required for the prebuilt Linux package.
 
 ## What RepoDoctor Does
 
@@ -115,7 +136,7 @@ RepoDoctor provides repository diagnostics across eight weighted categories:
 | Configuration | 10% |
 | Architecture | 5% |
 
-The result is both an overall repository health score and a prioritized explanation of the problems responsible for that score.
+The result is an overall repository health score plus a prioritized explanation of the problems responsible for that score.
 
 ## Highlights
 
@@ -128,16 +149,14 @@ The result is both an overall repository health score and a prioritized explanat
 - Dependency diagnostics
 - Configuration analysis
 - Architecture diagnostics
-- Repository-level static analysis signals
+- Repository-level static-analysis signals
 - Local repository scanning
-- GitHub repository scanning
+- Public GitHub repository scanning
 - Stable diagnostic rule IDs
 - Built-in rule explanations
 - Conservative automated fixes
 - SAFE vs REVIEW fix classification
-- Terminal reports
-- JSON reports
-- HTML reports
+- Terminal, JSON, and HTML reports
 - CI quality gates
 - English and Turkish interfaces
 - Interactive terminal Intelligence Console
@@ -146,8 +165,6 @@ The result is both an overall repository health score and a prioritized explanat
 ## Intelligence Console
 
 RepoDoctor includes a full-screen terminal interface for interactive repository inspection.
-
-Typical usage:
 
 ```console
 repodoctor ui .
@@ -159,18 +176,7 @@ Turkish interface:
 repodoctor ui . --lang tr
 ```
 
-The interface provides:
-
-- Overall repository health
-- Category scores
-- Finding counts
-- Technology metadata
-- Interactive diagnostic feed
-- Rule explanations
-- Recommended actions
-- Fix planning
-- Repository rescanning
-- Runtime EN/TR switching
+The interface provides overall health, category scores, finding counts, technology metadata, an interactive diagnostic feed, rule explanations, recommended actions, fix planning, rescanning, and runtime EN/TR switching.
 
 Keyboard controls are visible directly inside the interface:
 
@@ -186,8 +192,6 @@ Q        Quit
 The interactive UI currently operates on local repositories.
 
 ## CLI
-
-RepoDoctor is also designed for traditional terminal and automation workflows.
 
 ### Scan a repository
 
@@ -241,8 +245,6 @@ repodoctor scan . \
 
 ## Quality Gates
 
-RepoDoctor can be used as a CI quality gate.
-
 Require a minimum repository score:
 
 ```console
@@ -273,9 +275,7 @@ Changes considered sufficiently predictable for automatic application.
 
 ### REVIEW
 
-Changes requiring human judgment.
-
-REVIEW fixes are never automatically applied.
+Changes requiring human judgment. REVIEW fixes are never automatically applied.
 
 The autofix system is intentionally conservative: repository modification should be safer than the recommendation that triggered it.
 
@@ -293,25 +293,17 @@ Detected secret values are not intentionally printed into RepoDoctor diagnostic 
 
 RepoDoctor is not a replacement for a dedicated security audit, professional penetration test, or specialized secret-management system.
 
-See [SECURITY.md](SECURITY.md) for vulnerability reporting guidance.
+See [SECURITY.md](SECURITY.md) for vulnerability reporting guidance and [PRIVACY.md](PRIVACY.md) for the current data-handling model.
 
 ## Architecture Intelligence
 
-Supported architecture diagnostics include signals such as:
-
-- Large source files
-- Large Python classes
-- Large Python functions
-- Deep source layouts
-- Excessive source concentration
-- Python syntax failures
-- Conventional source-tree structure
+Supported architecture diagnostics include signals such as large source files, large Python classes and functions, deep source layouts, excessive source concentration, Python syntax failures, and conventional source-tree structure.
 
 Architecture checks are intended to surface maintainability risks rather than mandate a single coding style.
 
 ## Supported Project Detection
 
-RepoDoctor currently recognizes common repository markers for technologies including:
+RepoDoctor currently recognizes common repository markers for:
 
 - Python
 - Node.js / JavaScript
@@ -357,8 +349,6 @@ Run:
 ./repodoctor ui .
 ```
 
-No Python installation, virtual environment, pip, or uv is required.
-
 Verify the archive:
 
 ```bash
@@ -373,55 +363,18 @@ sha256sum -c SHA256SUMS.txt
 | Windows | Not yet officially verified or released |
 | macOS | Not yet officially verified or released |
 
-### Source Distribution
-
-The complete RepoDoctor implementation is not distributed as source code through this public repository.
-
-Official binaries are built from the privately maintained BLCCoreStudio development repository and published as reviewed release artifacts.
-
-The public repository is not intended to be a buildable copy of the proprietary RepoDoctor engine.
-
 ## Public Repository Model
 
-BLCCoreStudio maintains RepoDoctor using a split development model:
+> [!IMPORTANT]
+> This repository is the official public home, product showcase, Marketplace Action source, and release distribution point for RepoDoctor. The complete RepoDoctor analysis engine is proprietary and is developed in a separate private repository.
 
-```text
-Private development repository
-        │
-        ├── analysis engine
-        ├── diagnostics
-        ├── autofix implementation
-        ├── GitHub intelligence
-        ├── internal tests
-        └── release engineering
+The public repository contains the Marketplace Action wrapper, verified engine release binaries and checksums, product documentation, release history, security policy, and selected non-core showcase material. Public visibility of these files does not make the complete RepoDoctor engine open source.
 
-                ↓ reviewed export
-
-Public repository
-        │
-        ├── Marketplace Action wrapper
-        ├── product documentation
-        ├── release history
-        ├── security policy
-        ├── selected showcase material
-        └── public release information
-```
-
-The public export is whitelist-controlled to reduce the risk of accidentally publishing proprietary implementation files.
-
-The public repository validation workflow checks required public files, enforces the tracked-file whitelist, rejects sensitive file types, and blocks designated private implementation paths.
-
-## Public Source Disclosure
-
-Files visible in this repository are intentionally selected for public inspection.
-
-Their visibility does **not** imply that the complete RepoDoctor implementation is open source.
-
-No rights beyond those explicitly stated in the repository license are granted.
+The public export is whitelist-controlled to reduce the risk of accidentally publishing proprietary implementation files. Its validation workflow checks required public files, enforces the tracked-file whitelist, rejects sensitive file types, and blocks designated private implementation paths.
 
 ## Current Limitations
 
-RepoDoctor engine `0.1.1` remains alpha. RepoDoctor CI `v0.1.2` is the current published Marketplace Action wrapper.
+RepoDoctor engine `0.1.1` remains alpha. RepoDoctor CI `v0.1.3` is the Marketplace Action wrapper for this presentation update.
 
 Current limitations include:
 
@@ -432,27 +385,11 @@ Current limitations include:
 - The Marketplace Action currently supports Linux x86_64 runners only.
 - Repository health scores are engineering signals, not proof of correctness or security.
 
-## Release History
+## Legal, Support, and Release History
 
-See [CHANGELOG.md](CHANGELOG.md).
+RepoDoctor is proprietary software. Copyright © 2026 BLCCoreStudio. All rights reserved.
 
-## Security Reports
-
-Please review [SECURITY.md](SECURITY.md) before reporting a security issue.
-
-Do not include credentials, private keys, API tokens, or confidential repository data in public reports.
-
-## Rights and Licensing
-
-RepoDoctor is proprietary software.
-
-Copyright © 2026 BLCCoreStudio.
-
-All rights reserved.
-
-Public visibility of selected files does not constitute an open-source license.
-
-See [LICENSE](LICENSE) for the applicable terms.
+Use is subject to the [RepoDoctor EULA](EULA.md). See [PRIVACY.md](PRIVACY.md), [SUPPORT.md](SUPPORT.md), [SECURITY.md](SECURITY.md), [LICENSE](LICENSE), and [CHANGELOG.md](CHANGELOG.md) for the applicable policies and release history.
 
 ---
 
@@ -460,6 +397,6 @@ See [LICENSE](LICENSE) for the applicable terms.
 
 **Built by BLCCoreStudio.**
 
-[Engine v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Marketplace Action v0.1.2](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.2) · [Action docs](ACTION.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [License](LICENSE)
+[Marketplace Action v0.1.3](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.3) · [Action docs](ACTION.md) · [Engine v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Support](SUPPORT.md)
 
 </div>

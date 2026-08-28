@@ -1,4 +1,4 @@
-name: "RepoDoctor Repository Health by BLCCoreStudio"
+name: "RepoDoctor CI"
 description: "Scan a checked-out repository for health, security, testing, CI/CD, dependency, documentation, configuration, and architecture findings."
 author: "BLCCoreStudio"
 
@@ -8,7 +8,7 @@ branding:
 
 inputs:
   path:
-    description: "Repository path to scan. The repository must already be checked out."
+    description: "Repository path to scan. The repository must already be checked out and must stay inside GITHUB_WORKSPACE."
     required: false
     default: "."
   fail-under:

@@ -12,14 +12,19 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: action-smoke-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   smoke:
     name: Run local composite action
     runs-on: ubuntu-latest
+    timeout-minutes: 8
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Run RepoDoctor Action
         uses: ./
@@ -37,14 +42,64 @@ jobs:
           path: .
           fail-under: "101"
 
-      - name: Assert invalid score gate failed
+      - name: Reject invalid format
+        id: invalid-format
+        continue-on-error: true
+        uses: ./
+        with:
+          path: .
+          format: html
+
+      - name: Reject invalid language
+        id: invalid-language
+        continue-on-error: true
+        uses: ./
+        with:
+          path: .
+          language: xx
+
+      - name: Reject invalid severity
+        id: invalid-severity
+        continue-on-error: true
+        uses: ./
+        with:
+          path: .
+          fail-on: fatal
+
+      - name: Reject path outside workspace
+        id: outside-workspace
+        continue-on-error: true
+        uses: ./
+        with:
+          path: /tmp
+
+      - name: Assert invalid inputs failed
         if: always()
         shell: bash
         env:
           INVALID_SCORE_OUTCOME: ${{ steps.invalid-score-gate.outcome }}
+          INVALID_FORMAT_OUTCOME: ${{ steps.invalid-format.outcome }}
+          INVALID_LANGUAGE_OUTCOME: ${{ steps.invalid-language.outcome }}
+          INVALID_SEVERITY_OUTCOME: ${{ steps.invalid-severity.outcome }}
+          OUTSIDE_WORKSPACE_OUTCOME: ${{ steps.outside-workspace.outcome }}
         run: |
           set -euo pipefail
-          if [[ "$INVALID_SCORE_OUTCOME" != "failure" ]]; then
-            echo "Expected invalid fail-under input to fail, got: $INVALID_SCORE_OUTCOME"
+
+          failures=0
+          for result in \
+            "score:$INVALID_SCORE_OUTCOME" \
+            "format:$INVALID_FORMAT_OUTCOME" \
+            "language:$INVALID_LANGUAGE_OUTCOME" \
+            "severity:$INVALID_SEVERITY_OUTCOME" \
+            "outside-workspace:$OUTSIDE_WORKSPACE_OUTCOME"; do
+            name="${result%%:*}"
+            outcome="${result#*:}"
+            if [[ "$outcome" != "failure" ]]; then
+              echo "Expected ${name} validation to fail, got: ${outcome}"
+              failures=$((failures + 1))
+            fi
+          done
+
+          if (( failures > 0 )); then
             exit 1
           fi

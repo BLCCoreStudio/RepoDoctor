@@ -24,7 +24,7 @@ case "$(uname -m)" in
     ;;
 esac
 
-for command_name in curl sha256sum tar find; do
+for command_name in curl sha256sum tar find realpath; do
   command -v "$command_name" >/dev/null 2>&1 \
     || fail "required command '${command_name}' is not available on this runner."
 done
@@ -67,6 +67,23 @@ if [[ -n "$fail_on" ]]; then
   esac
 fi
 
+[[ -d "$scan_path" ]] || fail "path must point to an existing directory."
+scan_path="$(realpath -e -- "$scan_path")" \
+  || fail "path could not be resolved."
+
+if [[ -n "${GITHUB_WORKSPACE:-}" ]]; then
+  workspace="$(realpath -e -- "$GITHUB_WORKSPACE")" \
+    || fail "GITHUB_WORKSPACE could not be resolved."
+
+  case "${scan_path}/" in
+    "${workspace}/"*)
+      ;;
+    *)
+      fail "path must stay inside GITHUB_WORKSPACE."
+      ;;
+  esac
+fi
+
 work_dir="$(mktemp -d -t repodoctor-action.XXXXXXXXXX)"
 cleanup() {
   rm -rf -- "$work_dir"
@@ -83,18 +100,47 @@ curl \
   --location \
   --proto '=https' \
   --tlsv1.2 \
+  --retry 3 \
+  --retry-delay 1 \
+  --retry-all-errors \
+  --connect-timeout 10 \
+  --max-time 120 \
   --output "$archive_path" \
   "$REPODOCTOR_RELEASE_URL"
 
 printf '%s  %s\n' "$REPODOCTOR_SHA256" "$archive_path" | sha256sum --check --status \
   || fail "downloaded release archive failed SHA-256 verification."
 
+archive_listing="$(tar -tzf "$archive_path")" \
+  || fail "release archive could not be inspected."
+
+while IFS= read -r entry; do
+  [[ -n "$entry" ]] || continue
+
+  case "$entry" in
+    /*)
+      fail "release archive contains an absolute path."
+      ;;
+  esac
+
+  if [[ "$entry" == ".." || "$entry" == ../* || "$entry" == */../* || "$entry" == */.. ]]; then
+    fail "release archive contains path traversal components."
+  fi
+done <<< "$archive_listing"
+
 extract_dir="${work_dir}/extracted"
 mkdir -p "$extract_dir"
-tar -xzf "$archive_path" -C "$extract_dir"
+tar \
+  --extract \
+  --gzip \
+  --file "$archive_path" \
+  --directory "$extract_dir" \
+  --no-same-owner \
+  --no-same-permissions
 
 repodoctor_binary="$(find "$extract_dir" -type f -name repodoctor -print -quit)"
 [[ -n "$repodoctor_binary" ]] || fail "release archive did not contain the RepoDoctor executable."
+[[ ! -L "$repodoctor_binary" ]] || fail "RepoDoctor executable must not be a symbolic link."
 chmod u+x "$repodoctor_binary"
 
 args=(

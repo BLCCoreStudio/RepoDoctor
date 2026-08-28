@@ -26,6 +26,12 @@ It is designed around three questions:
 > **What is wrong with it?**  
 > **What should be fixed first?**
 
+## Intelligence Console Preview
+
+![RepoDoctor Intelligence Console](docs/repodoctor-intelligence-console.svg)
+
+The preview above is derived from the verified Textual release-candidate render against a controlled example repository. Repository scores and findings vary with the project being analyzed.
+
 ## Quick Start
 
 Download and extract the verified [RepoDoctor v0.1.1 Linux release](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1), then run:

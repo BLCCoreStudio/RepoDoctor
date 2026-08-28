@@ -9,10 +9,13 @@
 ACTION.md
 CHANGELOG.md
 CONTRIBUTING.md
+EULA.md
 LICENSE
+PRIVACY.md
 PUBLIC_MANIFEST.txt
 README.md
 SECURITY.md
+SUPPORT.md
 action-entrypoint.sh
 action.yml
 src/repodoctor/__init__.py

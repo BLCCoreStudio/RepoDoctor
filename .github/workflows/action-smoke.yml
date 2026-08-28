@@ -1,0 +1,29 @@
+name: RepoDoctor Action Smoke Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Run local composite action
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Run RepoDoctor Action
+        uses: ./
+        with:
+          path: .
+          format: json
+          language: en

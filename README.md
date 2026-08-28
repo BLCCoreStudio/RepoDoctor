@@ -4,7 +4,7 @@
 
 ### Repository health analyzer for security, testing, CI/CD, dependencies, documentation, and architecture
 
-[![Version](https://img.shields.io/badge/version-0.1.0-5B5BD6?style=for-the-badge)](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.0)
+[![Version](https://img.shields.io/badge/version-0.1.1-5B5BD6?style=for-the-badge)](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1)
 ![Status](https://img.shields.io/badge/status-alpha-0891B2?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/platform-Linux%20x86__64-111827?style=for-the-badge&logo=linux&logoColor=white)
 ![Build Target](https://img.shields.io/badge/glibc-2.31%2B-2563EB?style=for-the-badge)
@@ -12,7 +12,7 @@
 
 **Analyze repository health, prioritize code-quality findings, and fix what matters first from the CLI or interactive terminal interface.**
 
-[Release v0.1.0](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.0) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
+[Release v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -28,7 +28,7 @@ It is designed around three questions:
 
 ## Quick Start
 
-Download and extract the verified [RepoDoctor v0.1.0 Linux release](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.0), then run:
+Download and extract the verified [RepoDoctor v0.1.1 Linux release](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1), then run:
 
 ```bash
 # Scan the current repository
@@ -45,7 +45,7 @@ No Python installation, virtual environment, pip, or uv is required for the preb
 
 ## Public Preview
 
-**Current version:** `0.1.0`  
+**Current version:** `0.1.1`
 **Status:** Alpha
 
 > [!IMPORTANT]
@@ -287,18 +287,18 @@ RepoDoctor is distributed as prebuilt application packages. The proprietary impl
 **Status:** Verified  
 **Minimum build target:** glibc 2.31+
 
-**Official release:** [RepoDoctor v0.1.0](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.0)
+**Official release:** [RepoDoctor v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1)
 
 Download:
 
-- [`RepoDoctor-v0.1.0-linux-x86_64.tar.gz`](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.0/RepoDoctor-v0.1.0-linux-x86_64.tar.gz)
-- [`SHA256SUMS.txt`](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.0/SHA256SUMS.txt)
+- [`RepoDoctor-v0.1.1-linux-x86_64.tar.gz`](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/RepoDoctor-v0.1.1-linux-x86_64.tar.gz)
+- [`SHA256SUMS.txt`](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/SHA256SUMS.txt)
 
 Extract:
 
 ```bash
-tar -xzf RepoDoctor-v0.1.0-linux-x86_64.tar.gz
-cd RepoDoctor-v0.1.0-linux-x86_64
+tar -xzf RepoDoctor-v0.1.1-linux-x86_64.tar.gz
+cd RepoDoctor-v0.1.1-linux-x86_64
 ```
 
 Run:
@@ -372,7 +372,7 @@ No rights beyond those explicitly stated in the repository license are granted.
 
 ## Current Limitations
 
-RepoDoctor `0.1.0` is an alpha release.
+RepoDoctor `0.1.1` is an alpha release.
 
 Current limitations include:
 
@@ -410,6 +410,6 @@ See [LICENSE](LICENSE) for the applicable terms.
 
 **Built by BLCCoreStudio.**
 
-[Release](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.0) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [License](LICENSE)
+[Release](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [License](LICENSE)
 
 </div>

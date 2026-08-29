@@ -31,20 +31,24 @@ jobs:
             "https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/SHA256SUMS.txt"
           sha256sum -c SHA256SUMS.txt
 
-      - name: Extract and validate CLI
+      - name: Extract and validate actual runtime binary
         shell: bash
         run: |
           set -euo pipefail
           mkdir extracted
           tar -xzf "$ARCHIVE" -C extracted
-          mapfile -t matches < <(find extracted -type f -name repodoctor -print)
+          echo "Packaged executable candidates:"
+          find extracted -type f \( -name repodoctor -o -name repodoctor-bin \) -print
+
+          mapfile -t matches < <(find extracted -type f -name repodoctor-bin -print)
           if [[ "${#matches[@]}" -ne 1 ]]; then
-            printf 'Expected exactly one repodoctor binary, found %s\n' "${#matches[@]}" >&2
-            printf '%s\n' "${matches[@]:-}" >&2
+            printf 'Expected exactly one repodoctor-bin runtime, found %s\n' "${#matches[@]}" >&2
             exit 1
           fi
+
           cp "${matches[0]}" "$STANDALONE"
           chmod +x "$STANDALONE"
+          file "$STANDALONE"
           ./$STANDALONE version | tee /tmp/repodoctor-version.txt
           grep -q '0.1.1' /tmp/repodoctor-version.txt
           ./$STANDALONE --help >/tmp/repodoctor-help.txt

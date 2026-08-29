@@ -1,0 +1,82 @@
+name: Publish standalone CLI (temporary)
+
+on:
+  push:
+    branches: ["improve/cli-first-run"]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TAG: v0.1.1
+      ARCHIVE: RepoDoctor-v0.1.1-linux-x86_64.tar.gz
+      STANDALONE: repodoctor-linux-x86_64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Download and verify existing release package
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 \
+            -o "$ARCHIVE" \
+            "https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${ARCHIVE}"
+          curl --fail --location --retry 3 \
+            -o SHA256SUMS.txt \
+            "https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/SHA256SUMS.txt"
+          sha256sum -c SHA256SUMS.txt
+
+      - name: Extract and validate CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir extracted
+          tar -xzf "$ARCHIVE" -C extracted
+          mapfile -t matches < <(find extracted -type f -name repodoctor -print)
+          if [[ "${#matches[@]}" -ne 1 ]]; then
+            printf 'Expected exactly one repodoctor binary, found %s\n' "${#matches[@]}" >&2
+            printf '%s\n' "${matches[@]:-}" >&2
+            exit 1
+          fi
+          cp "${matches[0]}" "$STANDALONE"
+          chmod +x "$STANDALONE"
+          ./$STANDALONE version | tee /tmp/repodoctor-version.txt
+          grep -q '0.1.1' /tmp/repodoctor-version.txt
+          ./$STANDALONE --help >/tmp/repodoctor-help.txt
+          test -s /tmp/repodoctor-help.txt
+          sha256sum "$STANDALONE" > "${STANDALONE}.sha256"
+
+      - name: Upload standalone binary to existing release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release upload "$TAG" \
+            "$STANDALONE" \
+            "${STANDALONE}.sha256" \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber
+
+      - name: Verify published download end-to-end
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir verify
+          gh release download "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern "$STANDALONE" \
+            --pattern "${STANDALONE}.sha256" \
+            --dir verify
+          cd verify
+          sha256sum -c "${STANDALONE}.sha256"
+          chmod +x "$STANDALONE"
+          ./$STANDALONE version | tee /tmp/published-version.txt
+          grep -q '0.1.1' /tmp/published-version.txt

@@ -31,31 +31,70 @@ jobs:
             "https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/SHA256SUMS.txt"
           sha256sum -c SHA256SUMS.txt
 
-      - name: Extract and validate actual runtime binary
+      - name: Validate packaged CLI before repacking
         shell: bash
         run: |
           set -euo pipefail
           mkdir extracted
           tar -xzf "$ARCHIVE" -C extracted
-          echo "Packaged executable candidates:"
-          find extracted -type f \( -name repodoctor -o -name repodoctor-bin \) -print
+          mapfile -t launchers < <(find extracted -type f -name repodoctor -print)
+          if [[ "${#launchers[@]}" -ne 1 ]]; then
+            printf 'Expected exactly one packaged repodoctor launcher, found %s\n' "${#launchers[@]}" >&2
+            exit 1
+          fi
+          chmod +x "${launchers[0]}"
+          "${launchers[0]}" version | tee /tmp/package-version.txt
+          grep -q '0.1.1' /tmp/package-version.txt
 
-          mapfile -t matches < <(find extracted -type f -name repodoctor-bin -print)
-          if [[ "${#matches[@]}" -ne 1 ]]; then
-            printf 'Expected exactly one repodoctor-bin runtime, found %s\n' "${#matches[@]}" >&2
+      - name: Build single-file self-extracting launcher
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > "$STANDALONE" <<'HEADER'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          PAYLOAD_OFFSET=00000000000000000000
+          SELF="${BASH_SOURCE[0]}"
+          TMP_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/repodoctor.XXXXXXXX")"
+
+          cleanup() {
+            rm -rf "$TMP_ROOT"
+          }
+          trap cleanup EXIT HUP INT TERM
+
+          dd if="$SELF" bs=1 skip="$PAYLOAD_OFFSET" status=none | tar -xzf - -C "$TMP_ROOT"
+          mapfile -t launchers < <(find "$TMP_ROOT" -type f -name repodoctor -print)
+          if [[ "${#launchers[@]}" -ne 1 ]]; then
+            printf 'RepoDoctor launcher could not be resolved after extraction.\n' >&2
             exit 1
           fi
 
-          cp "${matches[0]}" "$STANDALONE"
+          chmod +x "${launchers[0]}"
+          "${launchers[0]}" "$@"
+          HEADER
+
+          HEADER_SIZE="$(stat -c %s "$STANDALONE")"
+          OFFSET="$(printf '%020d' "$HEADER_SIZE")"
+          python3 - "$STANDALONE" "$OFFSET" <<'PY'
+          import pathlib, sys
+          path = pathlib.Path(sys.argv[1])
+          offset = sys.argv[2].encode()
+          data = path.read_bytes()
+          marker = b'00000000000000000000'
+          if data.count(marker) != 1:
+              raise SystemExit('payload marker is not unique')
+          path.write_bytes(data.replace(marker, offset, 1))
+          PY
+
+          cat "$ARCHIVE" >> "$STANDALONE"
           chmod +x "$STANDALONE"
-          file "$STANDALONE"
-          ./$STANDALONE version | tee /tmp/repodoctor-version.txt
-          grep -q '0.1.1' /tmp/repodoctor-version.txt
-          ./$STANDALONE --help >/tmp/repodoctor-help.txt
-          test -s /tmp/repodoctor-help.txt
+          ./$STANDALONE version | tee /tmp/standalone-version.txt
+          grep -q '0.1.1' /tmp/standalone-version.txt
+          ./$STANDALONE --help >/tmp/standalone-help.txt
+          test -s /tmp/standalone-help.txt
           sha256sum "$STANDALONE" > "${STANDALONE}.sha256"
 
-      - name: Upload standalone binary to existing release
+      - name: Upload standalone file to existing release
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}

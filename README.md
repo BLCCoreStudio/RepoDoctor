@@ -11,11 +11,34 @@
 
 **Score repository health, surface prioritized findings, and add CI quality gates when you are ready to enforce them.**
 
-[View on GitHub Marketplace](https://github.com/marketplace/actions/repodoctor-ci) · [Action release v0.1.3](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.3) · [Action docs](ACTION.md) · [Engine v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Security](SECURITY.md) · [Support](SUPPORT.md)
+**[Use as GitHub Action](https://github.com/marketplace/actions/repodoctor-ci)** · **[Download Linux CLI](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/repodoctor-linux-x86_64)**
+
+[Action docs](ACTION.md) · [Engine v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Security](SECURITY.md) · [Support](SUPPORT.md)
 
 </div>
 
 ---
+
+## Choose how to use RepoDoctor
+
+| GitHub Action | Local CLI |
+| --- | --- |
+| Add repository health checks to CI. Start in report-only mode, then enable quality gates when ready. | Scan locally, inspect the interactive terminal UI, export JSON/HTML, or analyze a public GitHub repository. |
+| **[Use RepoDoctor on GitHub Marketplace](https://github.com/marketplace/actions/repodoctor-ci)** | **[Download `repodoctor-linux-x86_64`](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/repodoctor-linux-x86_64)** |
+
+### Linux CLI — download one file and run
+
+After downloading `repodoctor-linux-x86_64`, the basic flow is only three commands:
+
+```bash
+chmod +x repodoctor-linux-x86_64
+./repodoctor-linux-x86_64 scan .
+./repodoctor-linux-x86_64 ui .
+```
+
+No Python installation, virtual environment, pip, uv, or archive extraction is required. The single-file launcher contains the verified RepoDoctor v0.1.1 Linux package and extracts it to a temporary directory only while RepoDoctor is running.
+
+Matching checksum: [`repodoctor-linux-x86_64.sha256`](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/repodoctor-linux-x86_64.sha256)
 
 ## See repository health at a glance
 
@@ -140,20 +163,40 @@ The current Marketplace Action supports Linux x86_64 GitHub Actions runners and 
 
 ## Local CLI Quick Start
 
-Download and extract the verified [RepoDoctor v0.1.1 Linux engine release](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1), then run:
+### Download one file
+
+**[Download `repodoctor-linux-x86_64`](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/repodoctor-linux-x86_64)**
+
+Then:
 
 ```bash
-# Scan the current repository
-./repodoctor scan .
-
-# Analyze a public GitHub repository
-./repodoctor scan https://github.com/owner/repository
-
-# Open the interactive terminal interface
-./repodoctor ui .
+chmod +x repodoctor-linux-x86_64
+./repodoctor-linux-x86_64 scan .
+./repodoctor-linux-x86_64 ui .
 ```
 
-No Python installation, virtual environment, pip, or uv is required for the prebuilt Linux package.
+Other useful commands:
+
+```bash
+# Analyze a public GitHub repository
+./repodoctor-linux-x86_64 scan https://github.com/owner/repository
+
+# Turkish output
+./repodoctor-linux-x86_64 scan . --lang tr
+
+# Generate JSON
+./repodoctor-linux-x86_64 scan . --format json
+
+# Generate HTML
+./repodoctor-linux-x86_64 scan . --format html --output repodoctor-report.html
+```
+
+Verify the single-file download:
+
+```bash
+curl -LO https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/repodoctor-linux-x86_64.sha256
+sha256sum -c repodoctor-linux-x86_64.sha256
+```
 
 ## Scoring model
 
@@ -356,37 +399,39 @@ Technology-specific intelligence will continue to expand.
 
 RepoDoctor is distributed as prebuilt application packages. The proprietary implementation source code is not required to use the application.
 
-### Linux x86_64
+### Linux x86_64 — easiest option
 
 **Status:** Verified  
 **Minimum build target:** glibc 2.31+
 
-**Official engine release:** [RepoDoctor v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1)
+Download the single-file launcher:
 
-Download:
-
-- [`RepoDoctor-v0.1.1-linux-x86_64.tar.gz`](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/RepoDoctor-v0.1.1-linux-x86_64.tar.gz)
-- [`SHA256SUMS.txt`](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/SHA256SUMS.txt)
-
-Extract:
-
-```bash
-tar -xzf RepoDoctor-v0.1.1-linux-x86_64.tar.gz
-cd RepoDoctor-v0.1.1-linux-x86_64
-```
+- [`repodoctor-linux-x86_64`](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/repodoctor-linux-x86_64)
+- [`repodoctor-linux-x86_64.sha256`](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/repodoctor-linux-x86_64.sha256)
 
 Run:
 
 ```bash
+chmod +x repodoctor-linux-x86_64
+./repodoctor-linux-x86_64 scan .
+./repodoctor-linux-x86_64 ui .
+```
+
+The launcher is self-extracting: it contains the verified v0.1.1 package, runs it from a temporary directory, and removes that temporary directory when the command finishes.
+
+### Linux x86_64 — archive option
+
+The original release archive remains available for users who prefer an extracted installation:
+
+- [`RepoDoctor-v0.1.1-linux-x86_64.tar.gz`](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/RepoDoctor-v0.1.1-linux-x86_64.tar.gz)
+- [`SHA256SUMS.txt`](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/SHA256SUMS.txt)
+
+```bash
+tar -xzf RepoDoctor-v0.1.1-linux-x86_64.tar.gz
+cd RepoDoctor-v0.1.1-linux-x86_64
 ./repodoctor version
 ./repodoctor scan .
 ./repodoctor ui .
-```
-
-Verify the archive:
-
-```bash
-sha256sum -c SHA256SUMS.txt
 ```
 
 ### Platform Support
@@ -431,6 +476,6 @@ Use is subject to the [RepoDoctor EULA](EULA.md). See [PRIVACY.md](PRIVACY.md), 
 
 **Built by BLCCoreStudio.**
 
-[View on GitHub Marketplace](https://github.com/marketplace/actions/repodoctor-ci) · [Action release v0.1.3](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.3) · [Action docs](ACTION.md) · [Engine v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Support](SUPPORT.md)
+[Use as GitHub Action](https://github.com/marketplace/actions/repodoctor-ci) · [Download Linux CLI](https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/repodoctor-linux-x86_64) · [Action docs](ACTION.md) · [Support](SUPPORT.md)
 
 </div>

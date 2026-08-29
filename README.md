@@ -4,22 +4,38 @@
 
 ### Repository health scores and CI quality gates for GitHub Actions
 
-[![Marketplace Action](https://img.shields.io/badge/Marketplace-v0.1.3-1F6FEB?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.3)
+[![Marketplace Action](https://img.shields.io/badge/Marketplace-v0.1.3-1F6FEB?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/marketplace/actions/repodoctor-ci)
 [![Engine](https://img.shields.io/badge/engine-0.1.1-5B5BD6?style=for-the-badge)](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1)
 ![Status](https://img.shields.io/badge/status-alpha-0891B2?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/platform-Linux%20x86__64-111827?style=for-the-badge&logo=linux&logoColor=white)
 
-**Score repository health, surface prioritized findings, and stop CI when quality drops below the standards you choose.**
+**Score repository health, surface prioritized findings, and add CI quality gates when you are ready to enforce them.**
 
-[Marketplace Action v0.1.3](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.3) · [Action docs](ACTION.md) · [Engine v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Security](SECURITY.md) · [Support](SUPPORT.md)
+[View on GitHub Marketplace](https://github.com/marketplace/actions/repodoctor-ci) · [Action release v0.1.3](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.3) · [Action docs](ACTION.md) · [Engine v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Security](SECURITY.md) · [Support](SUPPORT.md)
 
 </div>
 
 ---
 
-## GitHub Actions — Quick setup
+## See repository health at a glance
 
-RepoDoctor CI analyzes a checked-out repository inside GitHub Actions and can enforce a minimum repository-health score or fail on findings at a selected severity.
+RepoDoctor analyzes repository-wide engineering signals and turns them into a single health view with prioritized findings.
+
+- **One repository-wide health score** instead of disconnected checks.
+- **Prioritized findings across eight categories** so you can see what deserves attention first.
+- **Optional CI quality gates** so the first run can stay report-only and enforcement can be enabled later.
+
+Use RepoDoctor as a GitHub Marketplace Action for CI, or use the standalone CLI and interactive terminal interface for deeper local inspection.
+
+## Intelligence Console Preview
+
+![RepoDoctor Intelligence Console](docs/repodoctor-intelligence-console.svg)
+
+The preview above is derived from the verified Textual release-candidate render against a controlled example repository. Repository scores and findings vary with the project being analyzed.
+
+## 60-second GitHub Actions setup
+
+Create `.github/workflows/repodoctor.yml` in your repository:
 
 ```yaml
 name: Repository Health
@@ -42,26 +58,24 @@ jobs:
 
       - name: Run RepoDoctor
         uses: BLCCoreStudio/RepoDoctor@v0.1.3
-        with:
-          path: .
-          fail-under: "80"
-          fail-on: warning
 ```
 
-### Trust by default
+This first-run configuration is **report-only**: repository findings are reported, but they do not fail the job unless you enable `fail-under` or `fail-on`.
 
-- **No RepoDoctor account required** for the Marketplace Action.
-- **No RepoDoctor API key required** for a local checked-out repository scan.
-- **Read-only workflow permissions are sufficient** for the documented setup.
-- **No repository write permission is required** by RepoDoctor CI.
-- The Action downloads a **fixed engine release and verifies its SHA-256 digest** before execution.
-- Scan targets are restricted to directories inside **`GITHUB_WORKSPACE`**.
+### Example result
 
-See [ACTION.md](ACTION.md) for every input, security detail, and example.
+A controlled example repository can produce output shaped like:
 
-## What you get
+```text
+Overall health: 96 / 100 — EXCELLENT
+18 passed · 2 warnings · 0 errors
+```
 
-RepoDoctor turns repository-wide engineering signals into a single health view and prioritized findings across:
+Scores and finding counts depend on the repository being analyzed.
+
+## What RepoDoctor checks
+
+RepoDoctor combines repository-level signals across:
 
 - Security
 - Repository structure
@@ -72,15 +86,35 @@ RepoDoctor turns repository-wide engineering signals into a single health view a
 - Configuration
 - Architecture
 
-Use it as a report-only Action, enforce a minimum score with `fail-under`, or fail CI on a selected finding severity with `fail-on`.
+The result is an overall health score plus prioritized findings that explain what affected that score.
 
-RepoDoctor also provides a standalone CLI and interactive terminal interface for deeper local inspection.
+## Ready to enforce standards?
 
-## Intelligence Console Preview
+After you have reviewed report-only results, enable one or both quality gates:
 
-![RepoDoctor Intelligence Console](docs/repodoctor-intelligence-console.svg)
+```yaml
+- name: Run RepoDoctor
+  uses: BLCCoreStudio/RepoDoctor@v0.1.3
+  with:
+    fail-under: "80"
+    fail-on: warning
+```
 
-The preview above is derived from the verified Textual release-candidate render against a controlled example repository. Repository scores and findings vary with the project being analyzed.
+- `fail-under` fails the job when the repository score is below the threshold you choose.
+- `fail-on` fails the job when findings reach the selected severity: `info`, `warning`, or `error`.
+
+Both inputs are optional.
+
+## Trust by default
+
+- **No RepoDoctor account required** for the Marketplace Action.
+- **No RepoDoctor API key required** for a local checked-out repository scan.
+- **Read-only workflow permissions are sufficient** for the documented setup.
+- **No repository write permission is required** by RepoDoctor CI.
+- The Action downloads a **fixed engine release and verifies its SHA-256 digest** before execution.
+- Scan targets are restricted to directories inside **`GITHUB_WORKSPACE`**.
+
+See [ACTION.md](ACTION.md) for every input, security detail, and example.
 
 ## Why RepoDoctor
 
@@ -121,7 +155,7 @@ Download and extract the verified [RepoDoctor v0.1.1 Linux engine release](https
 
 No Python installation, virtual environment, pip, or uv is required for the prebuilt Linux package.
 
-## What RepoDoctor Does
+## Scoring model
 
 RepoDoctor provides repository diagnostics across eight weighted categories:
 
@@ -374,7 +408,7 @@ The public export is whitelist-controlled to reduce the risk of accidentally pub
 
 ## Current Limitations
 
-RepoDoctor engine `0.1.1` remains alpha. RepoDoctor CI `v0.1.3` is the Marketplace Action wrapper for this presentation update.
+RepoDoctor engine `0.1.1` remains alpha. RepoDoctor CI `v0.1.3` is the current Marketplace Action wrapper.
 
 Current limitations include:
 
@@ -397,6 +431,6 @@ Use is subject to the [RepoDoctor EULA](EULA.md). See [PRIVACY.md](PRIVACY.md), 
 
 **Built by BLCCoreStudio.**
 
-[Marketplace Action v0.1.3](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.3) · [Action docs](ACTION.md) · [Engine v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Support](SUPPORT.md)
+[View on GitHub Marketplace](https://github.com/marketplace/actions/repodoctor-ci) · [Action release v0.1.3](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.3) · [Action docs](ACTION.md) · [Engine v0.1.1](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1) · [Support](SUPPORT.md)
 
 </div>

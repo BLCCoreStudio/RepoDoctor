@@ -70,7 +70,13 @@ jobs:
           fi
 
           chmod +x "${launchers[0]}"
+          set +e
           "${launchers[0]}" "$@"
+          status=$?
+          set -e
+          cleanup
+          trap - EXIT HUP INT TERM
+          exit "$status"
           HEADER
 
           HEADER_SIZE="$(stat -c %s "$STANDALONE")"

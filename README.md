@@ -4,7 +4,7 @@
 
 ### Repository health scores and CI quality gates for GitHub Actions
 
-[![Marketplace Action](https://img.shields.io/badge/Marketplace-v0.1.3-1F6FEB?style=for-the-badge&logo=github)](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.3)
+[![Marketplace Action](https://img.shields.io/badge/Marketplace-v0.1.3-1F6FEB?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.3)
 [![Engine](https://img.shields.io/badge/engine-0.1.1-5B5BD6?style=for-the-badge)](https://github.com/BLCCoreStudio/RepoDoctor/releases/tag/v0.1.1)
 ![Status](https://img.shields.io/badge/status-alpha-0891B2?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/platform-Linux%20x86__64-111827?style=for-the-badge&logo=linux&logoColor=white)

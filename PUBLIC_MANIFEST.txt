@@ -2,6 +2,7 @@ ACTION.md
 action-entrypoint.sh
 action.yml
 CHANGELOG.md
+CODE_OF_CONDUCT.md
 CONTRIBUTING.md
 docs/repodoctor-intelligence-console.svg
 EULA.md

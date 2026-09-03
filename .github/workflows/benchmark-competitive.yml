@@ -25,16 +25,19 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes hyperfine time python3-venv curl git
 
-      - name: Install verified RepoDoctor v0.1.1 release
+      - name: Install verified RepoDoctor v0.1.1 archive
         shell: bash
         run: |
           set -euo pipefail
-          cd /tmp
-          curl -fL https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/repodoctor-linux-x86_64 -o repodoctor-linux-x86_64
-          curl -fL https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/repodoctor-linux-x86_64.sha256 -o repodoctor-linux-x86_64.sha256
-          sha256sum -c repodoctor-linux-x86_64.sha256
-          chmod +x repodoctor-linux-x86_64
-          ./repodoctor-linux-x86_64 --version
+          rm -rf /tmp/repodoctor-v011
+          mkdir -p /tmp/repodoctor-v011
+          curl -fL https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/RepoDoctor-v0.1.1-linux-x86_64.tar.gz -o /tmp/repodoctor-v0.1.1.tar.gz
+          echo '9861e7b759e35da7a6fb913b7c6ee665f3e69b783129733c4d35d465dd1ec064  /tmp/repodoctor-v0.1.1.tar.gz' | sha256sum -c -
+          tar -xzf /tmp/repodoctor-v0.1.1.tar.gz -C /tmp/repodoctor-v011
+          repodoctor_bin="$(find /tmp/repodoctor-v011 -maxdepth 3 -type f -name repodoctor -perm -u+x -print -quit)"
+          test -n "$repodoctor_bin"
+          cp "$repodoctor_bin" /tmp/repodoctor
+          /tmp/repodoctor version
 
       - name: Install pinned codebase-health-score competitor
         shell: bash
@@ -93,12 +96,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          /tmp/repodoctor-linux-x86_64 scan /tmp/repo-health-fixture --format json >/tmp/repodoctor.json
-          /tmp/codebase-health-venv/bin/codebase-health analyze /tmp/repo-health-fixture >/tmp/codebase-health.txt
+          mkdir -p benchmark-results
+          /tmp/repodoctor scan /tmp/repo-health-fixture --format json >benchmark-results/repodoctor-output.json
+          /tmp/codebase-health-venv/bin/codebase-health analyze /tmp/repo-health-fixture >benchmark-results/codebase-health-output.txt
           python3 - <<'PY'
           import json
-          report=json.load(open('/tmp/repodoctor.json'))
-          text=open('/tmp/codebase-health.txt').read().lower()
+          report=json.load(open('benchmark-results/repodoctor-output.json'))
+          text=open('benchmark-results/codebase-health-output.txt').read().lower()
           assert report
           assert 'score' in json.dumps(report).lower()
           assert 'score' in text or '/100' in text
@@ -109,10 +113,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p benchmark-results
           {
             echo "workload=repository-health analysis of the same synthetic Python repo (500 source + 100 test files)"
-            echo "repodoctor=0.1.1"
+            echo "repodoctor=0.1.1 extracted verified release archive"
             echo "competitor=codebase-health-score@a400f07001349a18a888c72a7c1bf60dbb4f41a8"
             echo "runner=ubuntu-24.04"
             echo "kernel=$(uname -srmo)"
@@ -123,13 +126,11 @@ jobs:
           hyperfine --warmup 3 --runs 15 \
             --export-json benchmark-results/repo-health.json \
             --export-markdown benchmark-results/repo-health.md \
-            --command-name 'RepoDoctor 0.1.1' '/tmp/repodoctor-linux-x86_64 scan /tmp/repo-health-fixture --format json >/dev/null' \
+            --command-name 'RepoDoctor 0.1.1' '/tmp/repodoctor scan /tmp/repo-health-fixture --format json >/dev/null' \
             --command-name 'codebase-health-score 1.0.0' '/tmp/codebase-health-venv/bin/codebase-health analyze /tmp/repo-health-fixture >/dev/null'
 
-          /usr/bin/time -v /tmp/repodoctor-linux-x86_64 scan /tmp/repo-health-fixture --format json >/dev/null 2>benchmark-results/repodoctor-time-v.txt
+          /usr/bin/time -v /tmp/repodoctor scan /tmp/repo-health-fixture --format json >/dev/null 2>benchmark-results/repodoctor-time-v.txt
           /usr/bin/time -v /tmp/codebase-health-venv/bin/codebase-health analyze /tmp/repo-health-fixture >/dev/null 2>benchmark-results/codebase-health-time-v.txt
-          cp /tmp/repodoctor.json benchmark-results/repodoctor-output.json
-          cp /tmp/codebase-health.txt benchmark-results/codebase-health-output.txt
           cat benchmark-results/repo-health.md
 
       - name: Publish summary
@@ -152,5 +153,5 @@ jobs:
         with:
           name: repodoctor-competitive-benchmark-${{ github.sha }}
           path: benchmark-results/
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 90

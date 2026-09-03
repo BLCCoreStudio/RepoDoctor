@@ -1,0 +1,156 @@
+name: Competitive benchmark
+
+on:
+  pull_request:
+    paths:
+      - 'action.yml'
+      - 'README.md'
+      - '.github/workflows/benchmark-competitive.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  repository-health:
+    name: RepoDoctor vs codebase-health-score
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Install benchmark tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes hyperfine time python3-venv curl git
+
+      - name: Install verified RepoDoctor v0.1.1 release
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp
+          curl -fL https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/repodoctor-linux-x86_64 -o repodoctor-linux-x86_64
+          curl -fL https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/repodoctor-linux-x86_64.sha256 -o repodoctor-linux-x86_64.sha256
+          sha256sum -c repodoctor-linux-x86_64.sha256
+          chmod +x repodoctor-linux-x86_64
+          ./repodoctor-linux-x86_64 --version
+
+      - name: Install pinned codebase-health-score competitor
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m venv /tmp/codebase-health-venv
+          /tmp/codebase-health-venv/bin/pip install --quiet 'git+https://github.com/glue-tools-ai/codebase-health-score.git@a400f07001349a18a888c72a7c1bf60dbb4f41a8'
+          /tmp/codebase-health-venv/bin/codebase-health --help >/dev/null
+
+      - name: Create shared repository fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/repo-health-fixture
+          mkdir -p /tmp/repo-health-fixture/src /tmp/repo-health-fixture/tests /tmp/repo-health-fixture/.github/workflows
+          cd /tmp/repo-health-fixture
+          git init -q
+          git config user.name benchmark
+          git config user.email benchmark@example.invalid
+          cat > README.md <<'EOF'
+          # Benchmark Fixture
+          Synthetic Python repository used only for repository-health benchmarking.
+          EOF
+          cat > pyproject.toml <<'EOF'
+          [project]
+          name = "benchmark-fixture"
+          version = "0.1.0"
+          requires-python = ">=3.11"
+          EOF
+          cat > .gitignore <<'EOF'
+          __pycache__/
+          .venv/
+          EOF
+          cat > .github/workflows/ci.yml <<'EOF'
+          name: CI
+          on: [push]
+          jobs:
+            test:
+              runs-on: ubuntu-latest
+              steps:
+                - run: echo test
+          EOF
+          for i in $(seq -w 1 500); do
+            cat > "src/module_$i.py" <<EOF
+          def function_$i(value: int) -> int:
+              return value + $((10#$i))
+          EOF
+          done
+          for i in $(seq -w 1 100); do
+            printf 'def test_%s():\n    assert True\n' "$i" > "tests/test_$i.py"
+          done
+          git add .
+          git commit -qm 'benchmark fixture'
+
+      - name: Verify same task class
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/repodoctor-linux-x86_64 scan /tmp/repo-health-fixture --format json >/tmp/repodoctor.json
+          /tmp/codebase-health-venv/bin/codebase-health analyze /tmp/repo-health-fixture >/tmp/codebase-health.txt
+          python3 - <<'PY'
+          import json
+          report=json.load(open('/tmp/repodoctor.json'))
+          text=open('/tmp/codebase-health.txt').read().lower()
+          assert report
+          assert 'score' in json.dumps(report).lower()
+          assert 'score' in text or '/100' in text
+          print('Both tools produced repository-health scoring output for the same fixture.')
+          PY
+
+      - name: Benchmark repository health scan
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p benchmark-results
+          {
+            echo "workload=repository-health analysis of the same synthetic Python repo (500 source + 100 test files)"
+            echo "repodoctor=0.1.1"
+            echo "competitor=codebase-health-score@a400f07001349a18a888c72a7c1bf60dbb4f41a8"
+            echo "runner=ubuntu-24.04"
+            echo "kernel=$(uname -srmo)"
+            echo "cpu=$(lscpu | awk -F: '/Model name/{gsub(/^[ \t]+/,"",$2); print $2; exit}')"
+            echo "hyperfine=$(hyperfine --version | head -n1)"
+          } > benchmark-results/environment.txt
+
+          hyperfine --warmup 3 --runs 15 \
+            --export-json benchmark-results/repo-health.json \
+            --export-markdown benchmark-results/repo-health.md \
+            --command-name 'RepoDoctor 0.1.1' '/tmp/repodoctor-linux-x86_64 scan /tmp/repo-health-fixture --format json >/dev/null' \
+            --command-name 'codebase-health-score 1.0.0' '/tmp/codebase-health-venv/bin/codebase-health analyze /tmp/repo-health-fixture >/dev/null'
+
+          /usr/bin/time -v /tmp/repodoctor-linux-x86_64 scan /tmp/repo-health-fixture --format json >/dev/null 2>benchmark-results/repodoctor-time-v.txt
+          /usr/bin/time -v /tmp/codebase-health-venv/bin/codebase-health analyze /tmp/repo-health-fixture >/dev/null 2>benchmark-results/codebase-health-time-v.txt
+          cp /tmp/repodoctor.json benchmark-results/repodoctor-output.json
+          cp /tmp/codebase-health.txt benchmark-results/codebase-health-output.txt
+          cat benchmark-results/repo-health.md
+
+      - name: Publish summary
+        if: always()
+        run: |
+          if [[ -f benchmark-results/environment.txt ]]; then
+            echo '## Environment' >> "$GITHUB_STEP_SUMMARY"
+            echo '```text' >> "$GITHUB_STEP_SUMMARY"
+            cat benchmark-results/environment.txt >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [[ -f benchmark-results/repo-health.md ]]; then
+            echo '## Repository-health scan' >> "$GITHUB_STEP_SUMMARY"
+            cat benchmark-results/repo-health.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload raw evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: repodoctor-competitive-benchmark-${{ github.sha }}
+          path: benchmark-results/
+          if-no-files-found: error
+          retention-days: 90

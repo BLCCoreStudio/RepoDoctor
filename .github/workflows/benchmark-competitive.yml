@@ -34,10 +34,10 @@ jobs:
           curl -fL https://github.com/BLCCoreStudio/RepoDoctor/releases/download/v0.1.1/RepoDoctor-v0.1.1-linux-x86_64.tar.gz -o /tmp/repodoctor-v0.1.1.tar.gz
           echo '9861e7b759e35da7a6fb913b7c6ee665f3e69b783129733c4d35d465dd1ec064  /tmp/repodoctor-v0.1.1.tar.gz' | sha256sum -c -
           tar -xzf /tmp/repodoctor-v0.1.1.tar.gz -C /tmp/repodoctor-v011
-          repodoctor_bin="$(find /tmp/repodoctor-v011 -maxdepth 3 -type f -name repodoctor -perm -u+x -print -quit)"
-          test -n "$repodoctor_bin"
-          cp "$repodoctor_bin" /tmp/repodoctor
-          /tmp/repodoctor version
+          REPODOCTOR_BIN='/tmp/repodoctor-v011/RepoDoctor-v0.1.1-linux-x86_64/repodoctor'
+          test -x "$REPODOCTOR_BIN"
+          "$REPODOCTOR_BIN" version
+          echo "REPODOCTOR_BIN=$REPODOCTOR_BIN" >> "$GITHUB_ENV"
 
       - name: Install pinned codebase-health-score competitor
         shell: bash
@@ -97,7 +97,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p benchmark-results
-          /tmp/repodoctor scan /tmp/repo-health-fixture --format json >benchmark-results/repodoctor-output.json
+          "$REPODOCTOR_BIN" scan /tmp/repo-health-fixture --format json >benchmark-results/repodoctor-output.json
           /tmp/codebase-health-venv/bin/codebase-health analyze /tmp/repo-health-fixture >benchmark-results/codebase-health-output.txt
           python3 - <<'PY'
           import json
@@ -126,10 +126,10 @@ jobs:
           hyperfine --warmup 3 --runs 15 \
             --export-json benchmark-results/repo-health.json \
             --export-markdown benchmark-results/repo-health.md \
-            --command-name 'RepoDoctor 0.1.1' '/tmp/repodoctor scan /tmp/repo-health-fixture --format json >/dev/null' \
+            --command-name 'RepoDoctor 0.1.1' "$REPODOCTOR_BIN scan /tmp/repo-health-fixture --format json >/dev/null" \
             --command-name 'codebase-health-score 1.0.0' '/tmp/codebase-health-venv/bin/codebase-health analyze /tmp/repo-health-fixture >/dev/null'
 
-          /usr/bin/time -v /tmp/repodoctor scan /tmp/repo-health-fixture --format json >/dev/null 2>benchmark-results/repodoctor-time-v.txt
+          /usr/bin/time -v "$REPODOCTOR_BIN" scan /tmp/repo-health-fixture --format json >/dev/null 2>benchmark-results/repodoctor-time-v.txt
           /usr/bin/time -v /tmp/codebase-health-venv/bin/codebase-health analyze /tmp/repo-health-fixture >/dev/null 2>benchmark-results/codebase-health-time-v.txt
           cat benchmark-results/repo-health.md
 

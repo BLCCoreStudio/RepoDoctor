@@ -34,13 +34,21 @@ jobs:
           format: json
           language: en
 
-      - name: Reject invalid score gate
-        id: invalid-score-gate
+      - name: Reject score gate above maximum
+        id: invalid-score-gate-high
         continue-on-error: true
         uses: ./
         with:
           path: .
           fail-under: "101"
+
+      - name: Reject score gate below minimum
+        id: invalid-score-gate-low
+        continue-on-error: true
+        uses: ./
+        with:
+          path: .
+          fail-under: "-1"
 
       - name: Reject invalid format
         id: invalid-format
@@ -77,7 +85,8 @@ jobs:
         if: always()
         shell: bash
         env:
-          INVALID_SCORE_OUTCOME: ${{ steps.invalid-score-gate.outcome }}
+          INVALID_SCORE_HIGH_OUTCOME: ${{ steps.invalid-score-gate-high.outcome }}
+          INVALID_SCORE_LOW_OUTCOME: ${{ steps.invalid-score-gate-low.outcome }}
           INVALID_FORMAT_OUTCOME: ${{ steps.invalid-format.outcome }}
           INVALID_LANGUAGE_OUTCOME: ${{ steps.invalid-language.outcome }}
           INVALID_SEVERITY_OUTCOME: ${{ steps.invalid-severity.outcome }}
@@ -87,7 +96,8 @@ jobs:
 
           failures=0
           for result in \
-            "score:$INVALID_SCORE_OUTCOME" \
+            "score-high:$INVALID_SCORE_HIGH_OUTCOME" \
+            "score-low:$INVALID_SCORE_LOW_OUTCOME" \
             "format:$INVALID_FORMAT_OUTCOME" \
             "language:$INVALID_LANGUAGE_OUTCOME" \
             "severity:$INVALID_SEVERITY_OUTCOME" \
